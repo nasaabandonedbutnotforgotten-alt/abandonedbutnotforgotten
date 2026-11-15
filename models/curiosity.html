@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>
+/* Режим вбудовування: ?embed=mini (мітка на планеті) або ?embed=card (у картці сайту) */
+window.EMBED=new URLSearchParams(location.search).get('embed');
+if(window.EMBED)document.documentElement.classList.add('embed','embed-'+window.EMBED);
+</script>
+<style>
+.embed .panel{display:none}
+.embed .wrap{min-height:0}
+.embed .stage{height:100vh;min-height:0}
+html.embed-mini,.embed-mini body{background:transparent!important;overflow:hidden}
+.embed-mini .stage{background:transparent!important;cursor:default}
+.embed-mini .scene{left:50%!important;top:60%!important}
+.embed-mini .overlay,.embed-mini .hint,.embed-mini .shadow,.embed-mini .status{display:none!important}
+.embed-card .hint{font-size:11px;left:8px;bottom:8px}
+.embed-card .label span{font-size:11px;padding:3px 6px}
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Curiosity Rover — 3D model</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#0B1026;color:#E6EAF5;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{display:flex;flex-wrap:wrap;min-height:100%}
+.stage{flex:999 1 560px;min-width:0;position:relative;height:100vh;min-height:520px;overflow:hidden;cursor:grab;touch-action:none;
+ background:
+  radial-gradient(ellipse 50% 13% at 50% 78%,rgba(60,30,18,.5),rgba(0,0,0,0) 70%),
+  radial-gradient(3px 2px at 12% 66%,#6e3e27 50%,transparent 51%),radial-gradient(4px 2.5px at 72% 84%,#6a3a24 50%,transparent 51%),
+  radial-gradient(2px 1.5px at 28% 90%,#7a4630 50%,transparent 51%),radial-gradient(5px 3px at 88% 62%,#6f3f29 50%,transparent 51%),
+  linear-gradient(180deg,#c9a184 0%,#b88a6c 24%,#9a6448 30%,#a8704f 55%,#b98060 100%)}
+.stage:active{cursor:grabbing}
+.viewport{position:absolute;inset:0;perspective:1600px;perspective-origin:50% 40%}
+.scene{position:absolute;left:50%;top:66%;width:0;height:0;transform-style:preserve-3d}
+.obj{position:absolute;left:0;top:0;transform-style:preserve-3d}
+.f{position:absolute;left:0;top:0;backface-visibility:hidden;outline:1px solid rgba(0,0,0,.14)}
+.f2{position:absolute;left:0;top:0}
+.anchor{position:absolute;left:0;top:0;width:1px;height:1px}
+.overlay{position:absolute;inset:0;pointer-events:none}
+.label{position:absolute;left:0;top:0;pointer-events:none}
+.label span{position:absolute;left:8px;top:-12px;white-space:nowrap;font-size:13px;font-weight:600;background:rgba(11,16,38,.88);border:1px solid #2A3A6E;color:#fff;padding:4px 8px;border-radius:8px}
+.label i{position:absolute;left:-5px;top:-5px;width:10px;height:10px;border-radius:50%;background:#FF8A50;box-shadow:0 0 0 3px rgba(255,138,80,.3)}
+.hide-labels .label{display:none}
+.scene .hl .f,.scene .hl .f2{outline:2px solid #FF8A50;filter:brightness(1.35)}
+.panel{flex:1 1 300px;padding:28px 24px;border-left:1px solid #1E2A52;background:#0E1532;overflow:auto;max-height:100vh}
+h1{margin:0 0 6px;font-size:22px;line-height:1.25}
+.sub{margin:0 0 16px;color:#B8C2DC;font-size:14px;line-height:1.5}
+.specs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0 0 18px}
+.specs div{background:#10183A;border:1px solid #1E2A52;border-radius:10px;padding:8px 10px}
+.specs b{display:block;font-size:16px;color:#FF8A50}.specs small{font-size:12px;color:#A8B2CC}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+button{font:inherit;font-size:14px;font-weight:600;color:#fff;background:#1B2550;border:1px solid #2A3A6E;border-radius:10px;padding:10px 14px;min-height:44px;cursor:pointer}
+button:hover{background:#24306a}
+button[aria-pressed="true"]{background:#FF8A50;border-color:#FF8A50;color:#1a0e06}
+ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+ol li button{width:100%;text-align:left;display:flex;flex-direction:column;gap:2px;background:#10183A;font-weight:500}
+ol li b{font-size:15px;color:#fff}
+ol li small{color:#A8B2CC;font-size:12px;line-height:1.4}
+.hint{position:absolute;left:16px;bottom:14px;font-size:13px;color:#E6EAF5;background:rgba(11,16,38,.75);padding:6px 10px;border-radius:8px;pointer-events:none}
+.note{margin-top:20px;font-size:12px;line-height:1.5;color:#A8B2CC}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="stage" id="stage" aria-label="3D model of the Curiosity rover. Drag to rotate">
+  <div class="viewport"><div class="scene" id="scene"></div></div>
+  <div class="overlay" id="overlay"></div>
+  <div class="hint">Drag to rotate · scroll or pinch to zoom</div>
+ </div>
+ <aside class="panel">
+  <h1>Curiosity Rover</h1>
+  <p class="sub">Mars Science Laboratory, NASA/JPL, working on Mars since 2012 — 3D model based on the diagram. Hover over a part in the list to highlight it.</p>
+  <div class="specs">
+   <div><b>1.5 m</b><small>wheelbase</small></div><div><b>1.1 m</b><small>deck height</small></div>
+   <div><b>2.1 m</b><small>mast height</small></div><div><b>0.5 m</b><small>wheel diameter</small></div>
+   <div><b>0.66 m</b><small>ground clearance</small></div><div><b>899 kg</b><small>mass</small></div>
+  </div>
+  <div class="btns">
+   <button id="bArm" aria-pressed="false">Deploy the arm (drilling)</button>
+   <button id="bLabels" aria-pressed="true">Labels</button>
+   <button id="bSpin" aria-pressed="false">Auto-rotate</button>
+   <button id="bView">View as in the diagram</button>
+  </div>
+  <ol id="legend"></ol>
+  <p class="note">Curiosity is powered by a radioisotope generator, so dust storms are not a threat to it — unlike Opportunity and InSight. The model is schematic; proportions are approximate.</p>
+ </aside>
+</div>
+<script>
+(function(){
+const scene=document.getElementById('scene');
+const groups={};
+const PARTS=[
+ ['chemcam','ChemCam','A laser that analyzes rocks from up to 7 m away'],
+ ['mastcam','MastCam','Color cameras on the mast'],
+ ['rems','REMS','Weather station: temperature, wind, pressure, UV'],
+ ['rad','RAD','Radiation detector'],
+ ['rtg','RTG','Plutonium-238 radioisotope generator — the power source'],
+ ['uhf','UHF antenna','Communication through orbiters'],
+ ['hga','HGA antenna','High-gain antenna — direct link to Earth'],
+ ['dan','DAN','Uses neutrons to look for hydrogen (water) under the surface'],
+ ['lab','SAM & CheMin','Onboard labs for chemical and mineral analysis of samples'],
+ ['mardi','MARDI','The camera that filmed the landing'],
+ ['arm','Robotic arm (SA/SPaH)','2.1 m arm: drill, brush, scoop'],
+ ['turret','APXS & MAHLI','Spectrometer and close-up “magnifier” camera at the end of the arm'],
+ ['susp','Rocker-bogie suspension','Lets it climb over obstacles up to 65 cm'],
+ ['wheels','Wheels','Six aluminum wheels, 0.5 m across'],
+ ['body','Body','Warm Electronics Box — the heated compartment with electronics']
+];
+function shade(hex,k){const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;r=Math.min(255,r*k|0);g=Math.min(255,g*k|0);b=Math.min(255,b*k|0);return `rgb(${r},${g},${b})`}
+function grp(id){if(!groups[id]){const g=document.createElement('div');g.className='obj';g.dataset.part=id;scene.appendChild(g);groups[id]=g}return groups[id]}
+function wrap(parent,t){const o=document.createElement('div');o.className='obj';o.style.transform=t||'';parent.appendChild(o);return o}
+function box(parent,x,y,z,w,h,d,color,bg){
+ bg=bg||{};const o=document.createElement('div');o.className='obj';
+ o.style.transform=`translate3d(${x+w/2}px,${-(y+h/2)}px,${z+d/2}px)`;
+ const faces=[[w,h,`translateZ(${d/2}px)`,0.85],[w,h,`rotateY(180deg) translateZ(${d/2}px)`,0.55],
+  [d,h,`rotateY(90deg) translateZ(${w/2}px)`,0.98],[d,h,`rotateY(-90deg) translateZ(${w/2}px)`,0.5],
+  [w,d,`rotateX(90deg) translateZ(${h/2}px)`,1.05],[w,d,`rotateX(-90deg) translateZ(${h/2}px)`,0.32]];
+ faces.forEach((f,i)=>{const e=document.createElement('div');e.className='f';e.style.width=f[0]+'px';e.style.height=f[1]+'px';
+  e.style.marginLeft=(-f[0]/2)+'px';e.style.marginTop=(-f[1]/2)+'px';e.style.transform=f[2];e.style.background=bg[i]||shade(color,f[3]);o.appendChild(e)});
+ parent.appendChild(o);return o;
+}
+function rod(parent,p,q,t,color){
+ const dx=q[0]-p[0],dy=-(q[1]-p[1]),dz=q[2]-p[2];const L=Math.hypot(dx,dy,dz);
+ const b=Math.asin(dy/L)*180/Math.PI,a=Math.atan2(-dz,dx)*180/Math.PI;
+ const o=wrap(parent,`translate3d(${(p[0]+q[0])/2}px,${-(p[1]+q[1])/2}px,${(p[2]+q[2])/2}px) rotateY(${a}deg) rotateZ(${b}deg)`);
+ box(o,-L/2,-t/2,-t/2,L,t,t,color);return o;
+}
+function cyl(parent,x,y,z,r,h,color,axis,N,cap,side){
+ N=N||14;const pre=axis==='z'?'rotateX(90deg)':axis==='x'?'rotateZ(90deg)':'';
+ const o=wrap(parent,`translate3d(${x}px,${-y}px,${z}px) ${pre}`);const chord=2*r*Math.sin(Math.PI/N)+1;
+ for(let i=0;i<N;i++){const a=360/N*i;const e=document.createElement('div');e.className='f2';
+  e.style.cssText+=`width:${chord}px;height:${h}px;margin-left:${-chord/2}px;margin-top:${-h/2}px;background:${side?side+',':''}${shade(color,0.55+0.5*Math.max(0,Math.cos((a-40)*Math.PI/180)))};transform:rotateY(${a}deg) translateZ(${r}px)`;o.appendChild(e)}
+ [h/2,-h/2].forEach((yy,k)=>{const d=document.createElement('div');d.className='f2';d.style.cssText+=`width:${2*r}px;height:${2*r}px;margin-left:${-r}px;margin-top:${-r}px;border-radius:50%;background:${cap||shade(color,k?1.0:0.4)};transform:translateY(${-yy}px) rotateX(90deg)`;o.appendChild(d)});
+ return o;
+}
+const AL='#c3c6cc',DK='#4f5462',WH='#d9dbe0';
+// 1 m ≈ 100 px; deck at 110, clearance 66
+// ----- Body
+const B=grp('body');
+box(B,-110,66,-55,215,44,110,'#b9bcc2',{0:'repeating-linear-gradient(90deg,#9ea2a9 0 2px,transparent 2px 26px),#b9bcc2',1:'repeating-linear-gradient(90deg,#9ea2a9 0 2px,transparent 2px 26px),#a7abb2'});
+box(B,-112,110,-57,220,4,114,'#cfd2d7',{4:'repeating-linear-gradient(0deg,#b4b8bf 0 1px,transparent 1px 22px),repeating-linear-gradient(90deg,#b4b8bf 0 1px,transparent 1px 22px),#d3d6db'});
+// ----- Lab inlets (SAM, CheMin) on the deck front + white panel on the side
+const LB=grp('lab');box(LB,40,114,-30,18,8,14,'#e6e6e2');box(LB,40,114,-6,18,8,14,'#e6e6e2');box(LB,64,114,16,14,8,12,'#e6e6e2');box(LB,20,72,54,60,32,3,'#f2f2ef');
+// ----- RAD on deck
+const RD=grp('rad');cyl(RD,-10,120,10,10,10,'#8d929b','y',12);
+// ----- MARDI under the front-left
+const MD=grp('mardi');box(MD,70,58,-50,14,8,12,'#33363e');
+// ----- Mast with MastCam, ChemCam, REMS
+const MC=grp('mastcam');cyl(MC,75,165,-38,8,110,'#d1d4d9','y',12);
+box(MC,62,222,-56,30,14,36,'#d6d8dc');cyl(MC,94,229,-48,4,8,'#2a2d35','x',10,'#0b0d12');cyl(MC,94,229,-28,4,8,'#2a2d35','x',10,'#0b0d12');
+const CC=grp('chemcam');box(CC,55,236,-62,44,30,48,'#9ea3ab',{2:'repeating-linear-gradient(0deg,#7e838b 0 2px,#a7acb4 2px 6px)'});cyl(CC,100,252,-38,10,6,'#555a63','x',14,'radial-gradient(circle,#0b0d12 0 40%,#3a3f48 42%)');
+const RE=grp('rems');rod(RE,[75,190,-38],[75,190,-70],3,AL);rod(RE,[75,195,-38],[60,195,-10],3,AL);box(RE,72,186,-76,8,8,8,'#e8e8e8');box(RE,56,191,-8,8,8,8,'#e8e8e8');
+// ----- RTG at the rear: tilted cylinder with fins
+const RT=grp('rtg');const rt=wrap(RT,'translate3d(-140px,-150px,0px) rotateZ(-35deg)');
+cyl(rt,0,0,0,22,90,'#6b6f78','y',16,null,'repeating-linear-gradient(90deg,#2e3138 0 3px,transparent 3px 9px)');
+[0,45,90,135].forEach(a=>{const w=wrap(rt,`rotateY(${a}deg)`);box(w,-40,-40,-1,80,80,2,'#4a4e57',{0:'repeating-linear-gradient(0deg,#3a3d45 0 2px,#565a63 2px 8px)',1:'repeating-linear-gradient(0deg,#3a3d45 0 2px,#565a63 2px 8px)'})});
+rod(RT,[-112,112,-20],[-150,140,-20],4,AL);rod(RT,[-112,112,20],[-150,140,20],4,AL);
+// ----- UHF (rear) and HGA (rear-right hexagonal disc)
+const U=grp('uhf');cyl(U,-90,140,-35,4,50,'#e2e4e8','y',8);cyl(U,-90,168,-35,6,8,'#f0f0f0','y',8);
+const H=grp('hga');cyl(H,-60,125,40,5,24,AL,'y',8);
+const hd=wrap(H,'translate3d(-60px,-150px,40px) rotateY(-60deg) rotateX(-25deg)');
+['translateZ(0px)','rotateY(180deg)'].forEach(t=>{const d=document.createElement('div');d.className='f';d.style.cssText+=`width:48px;height:48px;margin-left:-24px;margin-top:-24px;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);transform:${t};background:radial-gradient(circle,#2a2d33 0 30%,#16181c)`;hd.appendChild(d)});
+// ----- DAN at the rear side
+const DN=grp('dan');box(DN,-108,70,-60,30,26,8,'#7c818a');
+// ----- Rocker-bogie + wheels (6)
+const SU=grp('susp'),W=grp('wheels');
+const TREAD='repeating-linear-gradient(60deg,rgba(0,0,0,0) 0 6px,rgba(0,0,0,.45) 6px 9px)';
+[-88,88].forEach(z=>{
+ const piv=[-10,90,z],fw=[95,25,z],bp=[-50,62,z],mw=[-5,25,z],rw=[-100,25,z];
+ rod(SU,piv,[95,62,z],7,AL);rod(SU,[95,62,z],fw,7,AL);rod(SU,piv,bp,7,AL);rod(SU,bp,[-5,50,z],6,AL);rod(SU,[-5,50,z],mw,6,AL);rod(SU,bp,[-100,50,z],6,AL);rod(SU,[-100,50,z],rw,6,AL);
+ rod(SU,[-10,90,z>0?55:-55],piv,6,DK);
+ [fw,mw,rw].forEach(p=>cyl(W,p[0],p[1],z+(z>0?14:-14),25,40,'#5b5f67','z',18,'radial-gradient(circle,#2b2e34 0 18%,#8d9198 20% 26%,#3d4047 28% 100%)',TREAD));
+});
+// ----- Arm: stowed (in front) and deployed (to the ground)
+const ARM=grp('arm'),TU=grp('turret');
+const stowed=wrap(ARM,''),deployed=wrap(ARM,'');
+rod(stowed,[105,92,-40],[140,92,-40],8,AL);rod(stowed,[140,92,-40],[150,78,20],8,AL);
+rod(deployed,[105,92,-40],[175,120,-40],8,AL);rod(deployed,[175,120,-40],[235,40,-30],8,AL);
+const tS=wrap(TU,''),tD=wrap(TU,'');
+function turret(par,x,y,z){box(par,x-12,y-12,z-12,24,24,24,'#9aa0aa');cyl(par,x,y-20,z,4,16,'#d0d3d8','y',8);cyl(par,x+18,y,z,6,12,'#c9ccd2','x',10,'#111');cyl(par,x,y,z+18,6,12,'#e1e3e6','z',10);box(par,x-8,y+12,z-20,16,10,10,'#7f848d')}
+turret(tS,155,72,26);turret(tD,240,36,-30);
+deployed.style.display='none';tD.style.display='none';
+// ----- Labels
+const LP={chemcam:[100,262,-38],mastcam:[96,229,-60],rems:[78,192,-76],rad:[-10,128,10],rtg:[-180,190,0],uhf:[-90,176,-35],hga:[-60,170,40],dan:[-100,82,-62],
+ lab:[50,124,-20],mardi:[78,56,-50],arm:[140,100,-40],turret:[160,60,30],susp:[-50,66,100],wheels:[95,30,110],body:[0,90,56]};
+const ov=document.getElementById('overlay');const labels=[];const anchors={};
+PARTS.forEach(([id,name])=>{const a=document.createElement('div');a.className='anchor';const p=LP[id];a.style.transform=`translate3d(${p[0]}px,${-p[1]}px,${p[2]}px)`;scene.appendChild(a);anchors[id]=a;
+ const l=document.createElement('div');l.className='label';l.innerHTML=`<i></i><span>${name}</span>`;ov.appendChild(l);labels.push([l,a])});
+const lg=document.getElementById('legend');
+PARTS.forEach(([id,name,en])=>{const li=document.createElement('li');const b=document.createElement('button');b.innerHTML=`<b>${name}</b><small>${en}</small>`;
+ const on=()=>groups[id].classList.add('hl'),off=()=>groups[id].classList.remove('hl');
+ b.addEventListener('mouseenter',on);b.addEventListener('mouseleave',off);b.addEventListener('focus',on);b.addEventListener('blur',off);li.appendChild(b);lg.appendChild(li)});
+// ----- View
+const VIEW={rx:-22,ry:-35};
+let rx=VIEW.rx,ry=VIEW.ry,zoom=1,spin=window.EMBED==='mini';
+function render(){
+ scene.style.transform=`scale(${zoom}) rotateX(${rx}deg) rotateY(${ry}deg)`;
+ const sr=ov.getBoundingClientRect();
+ labels.forEach(([l,a])=>{const r=a.getBoundingClientRect();l.style.transform=`translate(${r.left-sr.left}px,${r.top-sr.top}px)`});
+}
+const st=document.getElementById('stage');
+function fit(){const k=Math.min(st.clientWidth/640,st.clientHeight/560);zoom=window.EMBED?k*0.95:Math.max(.55,Math.min(1.9,k))}
+fit();render();window.addEventListener('resize',()=>{fit();render()});
+let drag=null;const pts=new Map();
+st.addEventListener('pointerdown',e=>{st.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);drag={x:e.clientX,y:e.clientY,rx,ry}});
+st.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,[e.clientX,e.clientY]);
+ if(pts.size===2){const [a,b]=[...pts.values()];const d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(drag.pd)zoom=Math.max(.4,Math.min(4,zoom*d/drag.pd));drag.pd=d;render();return}
+ ry=drag.ry+(e.clientX-drag.x)*0.4;rx=Math.max(-85,Math.min(10,drag.rx-(e.clientY-drag.y)*0.3));render()});
+const up=e=>{pts.delete(e.pointerId);if(pts.size===0)drag=null;else{const [a]=[...pts.values()];drag={x:a[0],y:a[1],rx,ry}}};
+st.addEventListener('pointerup',up);st.addEventListener('pointercancel',up);
+st.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.4,Math.min(4,zoom*(e.deltaY<0?1.08:0.93)));render()},{passive:false});
+function tick(){if(spin&&!drag){ry+=0.15;render()}requestAnimationFrame(tick)}tick();
+const tg=(b,v)=>b.setAttribute('aria-pressed',String(v));
+const ba=document.getElementById('bArm');ba.onclick=()=>{const v=ba.getAttribute('aria-pressed')!=='true';tg(ba,v);
+ stowed.style.display=v?'none':'';deployed.style.display=v?'':'none';tS.style.display=v?'none':'';tD.style.display=v?'':'none';
+ anchors.arm.style.transform=v?'translate3d(175px,-125px,-40px)':'translate3d(140px,-100px,-40px)';anchors.turret.style.transform=v?'translate3d(250px,-50px,-30px)':'translate3d(160px,-60px,30px)';
+ ba.textContent=v?'Stow the arm':'Deploy the arm (drilling)';render()};
+const bl=document.getElementById('bLabels');bl.onclick=()=>{const v=bl.getAttribute('aria-pressed')!=='true';tg(bl,v);st.classList.toggle('hide-labels',!v)};
+const bs=document.getElementById('bSpin');bs.onclick=()=>{spin=!spin;tg(bs,spin)};
+document.getElementById('bView').onclick=()=>{rx=VIEW.rx;ry=VIEW.ry;spin=false;tg(bs,false);fit();render()};
+// на планеті: кут огляду задає сайт
+if(window.EMBED==='mini'){spin=false;window.addEventListener('message',e=>{const d=e.data||{};if(d.type==='pose'){rx=d.rx;if(d.ry!==undefined)ry=d.ry;render()}})}
+})();
+</script>
+<script src="models-uk.js"></script>
+</body>
+</html>

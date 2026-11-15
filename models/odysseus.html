@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>
+/* Режим вбудовування: ?embed=mini (мітка на планеті) або ?embed=card (у картці сайту) */
+window.EMBED=new URLSearchParams(location.search).get('embed');
+if(window.EMBED)document.documentElement.classList.add('embed','embed-'+window.EMBED);
+</script>
+<style>
+.embed .panel{display:none}
+.embed .wrap{min-height:0}
+.embed .stage{height:100vh;min-height:0}
+html.embed-mini,.embed-mini body{background:transparent!important;overflow:hidden}
+.embed-mini .stage{background:transparent!important;cursor:default}
+.embed-mini .scene{left:50%!important;top:60%!important}
+.embed-mini .overlay,.embed-mini .hint,.embed-mini .shadow,.embed-mini .status{display:none!important}
+.embed-card .hint{font-size:11px;left:8px;bottom:8px}
+.embed-card .label span{font-size:11px;padding:3px 6px}
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Odysseus Lunar Lander (Nova-C) — 3D model</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#0B1026;color:#E6EAF5;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{display:flex;flex-wrap:wrap;min-height:100%}
+.stage{flex:999 1 560px;min-width:0;position:relative;height:100vh;min-height:520px;overflow:hidden;cursor:grab;touch-action:none;
+ background:
+  radial-gradient(ellipse 45% 12% at 50% 80%,rgba(30,29,27,.55),rgba(0,0,0,0) 70%),
+  radial-gradient(2px 1.5px at 12% 70%,#4d4b47 50%,transparent 51%),radial-gradient(3px 2px at 72% 86%,#4a4844 50%,transparent 51%),
+  radial-gradient(2px 1.5px at 28% 92%,#55534f 50%,transparent 51%),radial-gradient(4px 2.5px at 88% 66%,#4f4d49 50%,transparent 51%),
+  linear-gradient(180deg,#020306 0%,#020306 34%,#3f3d3a 38%,#6b6965 60%,#85827d 100%)}
+.stage:active{cursor:grabbing}
+.viewport{position:absolute;inset:0;perspective:1800px;perspective-origin:50% 38%}
+.scene{position:absolute;left:50%;top:76%;width:0;height:0;transform-style:preserve-3d}
+.obj{position:absolute;left:0;top:0;transform-style:preserve-3d}
+.f{position:absolute;left:0;top:0;backface-visibility:hidden;outline:1px solid rgba(0,0,0,.14)}
+.f2{position:absolute;left:0;top:0}
+.anchor{position:absolute;left:0;top:0;width:1px;height:1px}
+.overlay{position:absolute;inset:0;pointer-events:none}
+.label{position:absolute;left:0;top:0;pointer-events:none}
+.label span{position:absolute;left:8px;top:-12px;white-space:nowrap;font-size:13px;font-weight:600;background:rgba(11,16,38,.88);border:1px solid #2A3A6E;color:#fff;padding:4px 8px;border-radius:8px}
+.label i{position:absolute;left:-5px;top:-5px;width:10px;height:10px;border-radius:50%;background:#FF8A50;box-shadow:0 0 0 3px rgba(255,138,80,.3)}
+.hide-labels .label,.label.off{display:none}
+.scene .hl .f,.scene .hl .f2{outline:2px solid #FF8A50;filter:brightness(1.35)}
+.panel{flex:1 1 300px;padding:28px 24px;border-left:1px solid #1E2A52;background:#0E1532;overflow:auto;max-height:100vh}
+h1{margin:0 0 6px;font-size:22px;line-height:1.25}
+.sub{margin:0 0 16px;color:#B8C2DC;font-size:14px;line-height:1.5}
+.specs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0 0 18px}
+.specs div{background:#10183A;border:1px solid #1E2A52;border-radius:10px;padding:8px 10px}
+.specs b{display:block;font-size:16px;color:#FF8A50}.specs small{font-size:12px;color:#A8B2CC}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+button{font:inherit;font-size:14px;font-weight:600;color:#fff;background:#1B2550;border:1px solid #2A3A6E;border-radius:10px;padding:10px 14px;min-height:44px;cursor:pointer}
+button:hover{background:#24306a}
+button[aria-pressed="true"]{background:#FF8A50;border-color:#FF8A50;color:#1a0e06}
+ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+ol li button{width:100%;text-align:left;display:flex;flex-direction:column;gap:2px;background:#10183A;font-weight:500}
+ol li b{font-size:15px;color:#fff}
+ol li small{color:#A8B2CC;font-size:12px;line-height:1.4}
+.hint{position:absolute;left:16px;bottom:14px;font-size:13px;color:#E6EAF5;background:rgba(11,16,38,.75);padding:6px 10px;border-radius:8px;pointer-events:none}
+.note{margin-top:20px;font-size:12px;line-height:1.5;color:#A8B2CC}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="stage" id="stage" aria-label="3D model of the Odysseus lander. Drag to rotate">
+  <div class="viewport"><div class="scene" id="scene"></div></div>
+  <div class="overlay" id="overlay"></div>
+  <div class="hint">Drag to rotate · scroll or pinch to zoom</div>
+ </div>
+ <aside class="panel">
+  <h1>Odysseus Lunar Lander</h1>
+  <p class="sub">Intuitive Machines, IM-1 mission (February 2024), Nova-C class — 3D model based on the diagram. Hover over a part in the list to highlight it.</p>
+  <div class="specs">
+   <div><b>4.3 m</b><small>height</small></div><div><b>1.6 m</b><small>body width</small></div>
+   <div><b>4.6 m</b><small>leg span</small></div><div><b>675 kg</b><small>mass</small></div>
+   <div><b>130 kg</b><small>max payload</small></div><div><b>methane + oxygen</b><small>engine fuel</small></div>
+  </div>
+  <div class="btns">
+   <button id="bExplode" aria-pressed="false">Take apart (as in the diagram)</button>
+   <button id="bMoon" aria-pressed="false">As on the Moon (lying on its side)</button>
+   <button id="bLabels" aria-pressed="true">Labels</button>
+   <button id="bSpin" aria-pressed="false">Auto-rotate</button>
+  </div>
+  <ol id="legend"></ol>
+  <p class="note">On February 22, 2024, one leg caught the ground during landing and broke, so the lander ended up on its side at about 30°. The model is schematic; proportions are approximate.</p>
+ </aside>
+</div>
+<script>
+(function(){
+const scene=document.getElementById('scene');
+const root=document.createElement('div');root.className='obj';scene.appendChild(root);
+const groups={};const bbs=[];
+const PARTS=[
+ ['top','Top deck','Protects the lander from above'],
+ ['rcs','Reaction Control System (RCS)','Small helium thrusters'],
+ ['solar','Solar array','Panel on the side of the body'],
+ ['nav','Navigation pod','Sensors for landing'],
+ ['hull','Body','Six-sided, 1.6 m across'],
+ ['frame','Carbon composite structure','Carbon Composite Structure','inner'],
+ ['tanks','Liquid methane & liquid oxygen tanks','Liquid Methane & Liquid Oxygen Tanks','inner'],
+ ['he','Composite helium tanks','Helium for pressurization','inner'],
+ ['shield','Heat shield','Protects the bottom from engine heat'],
+ ['engine','VR900 engine','3D-printed; methane and oxygen, 3,100 N of thrust'],
+ ['legs','Aluminum crush-core legs','Six landing legs']
+];
+function shade(hex,k){const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;r=Math.min(255,r*k|0);g=Math.min(255,g*k|0);b=Math.min(255,b*k|0);return `rgb(${r},${g},${b})`}
+function grp(id){if(!groups[id]){const g=document.createElement('div');g.className='obj';g.dataset.part=id;root.appendChild(g);groups[id]=g}return groups[id]}
+function wrap(parent,t){const o=document.createElement('div');o.className='obj';o.style.transform=t||'';parent.appendChild(o);return o}
+function box(parent,x,y,z,w,h,d,color,bg){
+ bg=bg||{};const o=document.createElement('div');o.className='obj';
+ o.style.transform=`translate3d(${x+w/2}px,${-(y+h/2)}px,${z+d/2}px)`;
+ const faces=[[w,h,`translateZ(${d/2}px)`,0.85],[w,h,`rotateY(180deg) translateZ(${d/2}px)`,0.55],
+  [d,h,`rotateY(90deg) translateZ(${w/2}px)`,0.98],[d,h,`rotateY(-90deg) translateZ(${w/2}px)`,0.5],
+  [w,d,`rotateX(90deg) translateZ(${h/2}px)`,1.05],[w,d,`rotateX(-90deg) translateZ(${h/2}px)`,0.32]];
+ faces.forEach((f,i)=>{const e=document.createElement('div');e.className='f';e.style.width=f[0]+'px';e.style.height=f[1]+'px';
+  e.style.marginLeft=(-f[0]/2)+'px';e.style.marginTop=(-f[1]/2)+'px';e.style.transform=f[2];e.style.background=bg[i]||shade(color,f[3]);o.appendChild(e)});
+ parent.appendChild(o);return o;
+}
+function rod(parent,p,q,t,color){
+ const dx=q[0]-p[0],dy=-(q[1]-p[1]),dz=q[2]-p[2];const L=Math.hypot(dx,dy,dz);
+ const b=Math.asin(dy/L)*180/Math.PI,a=Math.atan2(-dz,dx)*180/Math.PI;
+ const o=wrap(parent,`translate3d(${(p[0]+q[0])/2}px,${-(p[1]+q[1])/2}px,${(p[2]+q[2])/2}px) rotateY(${a}deg) rotateZ(${b}deg)`);
+ box(o,-L/2,-t/2,-t/2,L,t,t,color);return o;
+}
+function sphere(parent,x,y,z,r,c1,c2){
+ const e=document.createElement('div');e.className='f2';
+ e.style.cssText+=`width:${2*r}px;height:${2*r}px;margin-left:${-r}px;margin-top:${-r}px;border-radius:50%;background:radial-gradient(circle at 62% 35%,#fff 0 5%,${c1} 22%,${c2} 100%)`;
+ const o=wrap(parent,`translate3d(${x}px,${-y}px,${z}px)`);o.appendChild(e);bbs.push(e);return o;
+}
+function cyl(parent,x,y,z,r,h,color,N,cap){
+ N=N||12;const o=wrap(parent,`translate3d(${x}px,${-y}px,${z}px)`);const chord=2*r*Math.sin(Math.PI/N)+1;
+ for(let i=0;i<N;i++){const a=360/N*i;const e=document.createElement('div');e.className='f2';
+  e.style.cssText+=`width:${chord}px;height:${h}px;margin-left:${-chord/2}px;margin-top:${-h/2}px;background:${shade(color,0.55+0.5*Math.max(0,Math.cos((a-40)*Math.PI/180)))};transform:rotateY(${a}deg) translateZ(${r}px)`;o.appendChild(e)}
+ [h/2,-h/2].forEach((yy,k)=>{const d=document.createElement('div');d.className='f2';d.style.cssText+=`width:${2*r}px;height:${2*r}px;margin-left:${-r}px;margin-top:${-r}px;border-radius:50%;background:${cap&&!k?cap:shade(color,k?0.4:1.0)};transform:translateY(${-yy}px) rotateX(90deg)`;o.appendChild(d)});
+ return o;
+}
+function hexDiv(size,bg){const pts=[];for(let i=0;i<6;i++){const a=(i*60+30)*Math.PI/180;pts.push(`${50+50*Math.cos(a)}% ${50+50*Math.sin(a)}%`)}
+ const e=document.createElement('div');e.className='f2';e.style.cssText+=`width:${size}px;height:${size}px;margin-left:${-size/2}px;margin-top:${-size/2}px;clip-path:polygon(${pts.join(',')});background:${bg}`;return e}
+const pol=(r,deg,y)=>[r*Math.cos(deg*Math.PI/180),y,r*Math.sin(deg*Math.PI/180)];
+// sizes (1 m ≈ 90 px)
+const R=78, AP=R*Math.cos(Math.PI/6), HB=110, HT=300;
+// explode offsets per group: [dy, radial]
+const EX={top:[150,0],rcs:[95,0],solar:[25,90],nav:[40,120],hull:[25,75],frame:[25,0],tanks:[25,0],he:[25,0],shield:[-45,0],engine:[-95,0],legs:[-150,0]};
+// ----- Hull: 6 panels
+const H=grp('hull');const panels=[];
+const FOIL='linear-gradient(160deg,#e3c46a,#a77f2c 55%,#d7b55a)';
+const FLAG='linear-gradient(#2f3d78,#2f3d78) 14px 14px/26px 18px no-repeat,repeating-linear-gradient(0deg,#c43b3b 0 3px,#f1f1f1 3px 6px) 14px 14px/52px 32px no-repeat,#eef0f3';
+const looks=['#eef0f3',FLAG,'#20232a',FOIL,'#eef0f3','#2a2d34'];
+for(let i=0;i<6;i++){const a=i*60;const w=wrap(H,`rotateY(${-a}deg)`);const p=wrap(w,'');panels.push(p);
+ const e=document.createElement('div');e.className='f2';const hh=HT-HB;
+ e.style.cssText+=`width:${R+1}px;height:${hh}px;margin-left:${-(R+1)/2}px;margin-top:${-hh/2}px;background:${looks[i]};outline:1px solid rgba(0,0,0,.25);filter:brightness(${0.65+0.4*Math.max(0,Math.cos((a-60)*Math.PI/180))})`;
+ p.appendChild(e);p.dataset.base=`rotateY(90deg) translate3d(0px,${-(HB+HT)/2}px,0px)`;p.dataset.i=i}
+// bottom plate
+const bot=wrap(H,`translate3d(0px,${-HB}px,0px) rotateX(90deg)`);bot.appendChild(hexDiv(2*R,'#3a3d44'));
+// ----- Solar array (on one face, radial)
+const SA=grp('solar');const saW=wrap(SA,'rotateY(-240deg)');const saP=wrap(saW,'');
+{const e=document.createElement('div');e.className='f2';e.style.cssText+=`width:56px;height:170px;margin-left:-28px;margin-top:-85px;background:repeating-linear-gradient(0deg,#d06a5a 0 1px,transparent 1px 9px),repeating-linear-gradient(90deg,#d06a5a 0 1px,transparent 1px 9px),#3a0f14`;saP.appendChild(e)}
+// ----- Navigation pod (upper side)
+const NV=grp('nav');const nvW=wrap(NV,'rotateY(-300deg)');const nvP=wrap(nvW,'');box(nvP,-14,-20,0,28,40,26,'#d9b36a');box(nvP,-8,20,4,16,14,16,'#3a3d46');
+// ----- Inner: carbon frame (two crossing black plates), tanks, helium tanks
+const FR=grp('frame');[0,60,120].forEach(a=>{const w=wrap(FR,`translate3d(0px,${-(HB+HT)/2}px,0px) rotateY(${a}deg)`);const e=document.createElement('div');e.className='f2';
+ e.style.cssText+=`width:${2*AP-6}px;height:${HT-HB-10}px;margin-left:${-(AP-3)}px;margin-top:${-(HT-HB-10)/2}px;background:repeating-linear-gradient(45deg,#15161a 0 6px,#23252b 6px 12px);opacity:.9;clip-path:polygon(0 0,100% 0,100% 100%,0 100%,0 60%,30% 50%,0 40%)`;w.appendChild(e)});
+const TK=grp('tanks');sphere(TK,0,250,0,52,'#b98a5a','#3b2410');sphere(TK,0,160,0,58,'#a97a4c','#2e1c0c');
+const HE=grp('he');sphere(HE,pol(55,150,0)[0],140,pol(55,150,0)[2],24,'#e7c068','#7a5418');sphere(HE,pol(55,330,0)[0],240,pol(55,330,0)[2],22,'#e7c068','#7a5418');
+// ----- RCS frame
+const RC=grp('rcs');const rcsTop=HT+8;
+for(let i=0;i<6;i++){rod(RC,pol(R+6,i*60+30,rcsTop),pol(R+6,i*60+90,rcsTop),5,'#c9a24b')}
+[30,150,270].forEach(a=>{const p=pol(R+16,a,rcsTop);box(RC,p[0]-7,rcsTop-6,p[2]-7,14,12,14,'#d9dbe0')});
+// ----- Top panel on struts
+const TP=grp('top');const topY=HT+40;
+const tpw=wrap(TP,`translate3d(0px,${-topY}px,0px) rotateX(90deg)`);tpw.appendChild(hexDiv(2*R+30,'repeating-linear-gradient(0deg,rgba(255,255,255,.08) 0 1px,transparent 1px 10px),repeating-linear-gradient(90deg,rgba(255,255,255,.08) 0 1px,transparent 1px 10px),#6b4f4c'));
+for(let i=0;i<6;i++){rod(TP,pol(R-6,i*60+30,HT+2),pol(R+4,i*60+30,topY),3,'#2a2a2a')}
+// ----- Heat shield (ring under the hull)
+const SH=grp('shield');cyl(SH,0,HB-18,0,52,34,'#cfd2d8',12,'radial-gradient(circle,#2b2d33 0 30%,#c7cad0 32%)');
+// ----- Engine bell (stacked rings)
+const EN=grp('engine');[[10,90,10],[14,80,10],[18,70,10],[22,60,10],[26,50,10],[30,42,8]].forEach(([r,y,h])=>cyl(EN,0,y,0,r,h,'#2b2d33',14));
+// ----- Legs (6): A-frames to footpads
+const LG=grp('legs');const legParts=[];
+for(let i=0;i<6;i++){const a=i*60;const foot=pol(205,a,8);const holder=wrap(LG,'');legParts.push(holder);
+ rod(holder,pol(R-4,a-22,HB+6),foot,5,'#c4c7cd');rod(holder,pol(R-4,a+22,HB+6),foot,5,'#c4c7cd');rod(holder,pol(R-2,a,HB+80),foot,4,'#9ea2a9');
+ cyl(holder,foot[0],4,foot[2],16,6,'#c8a250',14)}
+// broken stub for the Moon state
+const stub=wrap(LG,'');rod(stub,pol(R-4,-22,HB+6),pol(130,0,62),5,'#c4c7cd');rod(stub,pol(R-4,22,HB+6),pol(125,6,66),5,'#c4c7cd');stub.style.display='none';
+const rock=wrap(scene,'');box(rock,100,0,-40,95,48,80,'#5d5a55');rock.style.display='none';
+// ----- Labels
+const LP={top:[R,topY+10,0],rcs:[pol(R+16,270,0)[0],rcsTop+20,pol(R+16,270,0)[2]],solar:[0,250,0],nav:[0,300,0],hull:[pol(AP,0,0)[0],200,pol(AP,0,0)[2]],
+ frame:[0,200,AP-10],tanks:[0,280,0],he:[pol(55,150,0)[0],160,pol(55,150,0)[2]],shield:[52,HB-10,0],engine:[30,45,0],legs:[205,20,0]};
+const ov=document.getElementById('overlay');const labels=[];
+const anchorParent={solar:saP,nav:nvP};
+PARTS.forEach(([id,name,en,kind])=>{const a=document.createElement('div');a.className='anchor';const p=LP[id];
+ if(anchorParent[id]){a.style.transform=`translate3d(0px,-60px,30px)`;anchorParent[id].appendChild(a)}else{a.style.transform=`translate3d(${p[0]}px,${-p[1]}px,${p[2]}px)`;groups[id].appendChild(a)}
+ const l=document.createElement('div');l.className='label';l.dataset.kind=kind||'';l.innerHTML=`<i></i><span>${name}</span>`;ov.appendChild(l);labels.push([l,a,kind])});
+const lg=document.getElementById('legend');
+PARTS.forEach(([id,name,en,kind])=>{const li=document.createElement('li');const b=document.createElement('button');b.innerHTML=`<b>${name}</b><small>${en}${kind?' · visible when taken apart':''}</small>`;
+ const on=()=>groups[id].classList.add('hl'),off=()=>groups[id].classList.remove('hl');
+ b.addEventListener('mouseenter',on);b.addEventListener('mouseleave',off);b.addEventListener('focus',on);b.addEventListener('blur',off);li.appendChild(b);lg.appendChild(li)});
+// ----- State
+let rx=-16,ry=-30,zoom=1,spin=window.EMBED==='mini',ex=0,exT=0,tip=0,tipT=0;
+function render(){
+ scene.style.transform=`scale(${zoom*(1-0.3*ex)}) rotateX(${rx}deg) rotateY(${ry}deg)`;
+ const lift=150*ex;
+ const tipT3=`translate3d(205px,0px,0px) rotateZ(${30*tip}deg) translate3d(-205px,0px,0px)`;
+ root.style.transform=`translate3d(0px,${-lift}px,0px) ${tip>0?tipT3:''}`;
+ for(const id in EX){const [dy,rad]=EX[id];const g=groups[id];
+  if(id==='hull'){g.style.transform=`translate3d(0px,${-dy*ex}px,0px)`;panels.forEach(p=>p.style.transform=`rotateY(90deg) translate3d(0px,${-(HB+HT)/2}px,${AP+rad*ex}px) rotateY(-90deg) rotateY(90deg)`.replace('rotateY(90deg) translate3d',`translate3d`).replace(' rotateY(-90deg) rotateY(90deg)',''));}
+  else if(id==='solar'){g.style.transform=`translate3d(0px,${-dy*ex}px,0px)`;saP.style.transform=`translate3d(${AP+4+rad*ex}px,-200px,0px) rotateY(90deg)`}
+  else if(id==='nav'){g.style.transform=`translate3d(0px,${-dy*ex}px,0px)`;nvP.style.transform=`translate3d(${AP+12+rad*ex}px,-250px,0px) rotateY(90deg)`}
+  else g.style.transform=`translate3d(0px,${-dy*ex}px,0px)`}
+ const inner=ex>0.05;['frame','tanks','he'].forEach(id=>groups[id].style.display=inner?'':'none');
+ labels.forEach(([l,a,kind])=>l.classList.toggle('off',!!kind&&!inner));
+ const bt=`rotateY(${-ry}deg) rotateX(${-rx}deg)`;bbs.forEach(e=>e.style.transform=bt);
+ const sr=ov.getBoundingClientRect();
+ labels.forEach(([l,a])=>{const r=a.getBoundingClientRect();l.style.transform=`translate(${r.left-sr.left}px,${r.top-sr.top}px)`});
+}
+// panels: position along local +x after rotateY(-a)
+panels.forEach(p=>{});
+const st=document.getElementById('stage');
+function fit(){const k=Math.min(st.clientWidth/760,st.clientHeight/640);zoom=window.EMBED?k*0.95:Math.max(.45,Math.min(1.3,k))}
+fit();
+// custom panel transform (face outward on local +x)
+const _render=render;
+render=function(){_render();panels.forEach(p=>p.style.transform=`translate3d(${AP+EX.hull[1]*ex}px,${-(HB+HT)/2}px,0px) rotateY(90deg)`)};
+render();window.addEventListener('resize',()=>{fit();render()});
+let drag=null;const pts=new Map();
+st.addEventListener('pointerdown',e=>{st.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);drag={x:e.clientX,y:e.clientY,rx,ry}});
+st.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,[e.clientX,e.clientY]);
+ if(pts.size===2){const [a,b]=[...pts.values()];const d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(drag.pd)zoom=Math.max(.35,Math.min(3,zoom*d/drag.pd));drag.pd=d;render();return}
+ ry=drag.ry+(e.clientX-drag.x)*0.4;rx=Math.max(-85,Math.min(10,drag.rx-(e.clientY-drag.y)*0.3));render()});
+const up=e=>{pts.delete(e.pointerId);if(pts.size===0)drag=null;else{const [a]=[...pts.values()];drag={x:a[0],y:a[1],rx,ry}}};
+st.addEventListener('pointerup',up);st.addEventListener('pointercancel',up);
+st.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.35,Math.min(3,zoom*(e.deltaY<0?1.08:0.93)));render()},{passive:false});
+let last=performance.now();
+function tick(now){const dt=Math.min(.25,(now-last)/1000);last=now;let d=false;
+ if(Math.abs(ex-exT)>.001){ex+=Math.sign(exT-ex)*Math.min(Math.abs(exT-ex),dt*1.4);d=true}
+ if(Math.abs(tip-tipT)>.001){tip+=Math.sign(tipT-tip)*Math.min(Math.abs(tipT-tip),dt*1.2);d=true}
+ if(spin&&!drag){ry+=0.15;d=true}
+ if(d)render();requestAnimationFrame(tick)}
+requestAnimationFrame(tick);
+const tg=(b,v)=>b.setAttribute('aria-pressed',String(v));
+const be=document.getElementById('bExplode'),bm=document.getElementById('bMoon');
+be.onclick=()=>{const v=be.getAttribute('aria-pressed')!=='true';tg(be,v);exT=v?1:0;be.textContent=v?'Put together':'Take apart (as in the diagram)';
+ if(v&&bm.getAttribute('aria-pressed')==='true')bm.click()};
+bm.onclick=()=>{const v=bm.getAttribute('aria-pressed')!=='true';tg(bm,v);tipT=v?1:0;legParts[0].style.display=v?'none':'';stub.style.display=v?'':'none';rock.style.display=v?'':'none';
+ if(v&&be.getAttribute('aria-pressed')==='true')be.click();if(v){rx=-10;ry=-12}render()};
+const bl=document.getElementById('bLabels');bl.onclick=()=>{const v=bl.getAttribute('aria-pressed')!=='true';tg(bl,v);st.classList.toggle('hide-labels',!v)};
+const bs=document.getElementById('bSpin');bs.onclick=()=>{spin=!spin;tg(bs,spin)};
+// на планеті: кут огляду задає сайт
+if(window.EMBED==='mini'){spin=false;window.addEventListener('message',e=>{const d=e.data||{};if(d.type==='pose'){rx=d.rx;if(d.ry!==undefined)ry=d.ry;render()}})}
+})();
+</script>
+<script src="models-uk.js"></script>
+</body>
+</html>

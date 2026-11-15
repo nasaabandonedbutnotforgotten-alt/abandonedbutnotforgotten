@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo 10 — Lunar Module “Snoopy” — 3D model</title>
+<script>
+window.EMBED=new URLSearchParams(location.search).get('embed');
+if(window.EMBED)document.documentElement.classList.add('embed','embed-'+window.EMBED);
+window.LANGX=(/(^|[?&])lang=(uk|ua)\b/i.test(location.search)||(()=>{try{return localStorage.getItem('lang')==='uk'||(parent!==window&&parent.LANG==='uk')}catch(e){return false}})())?'uk':'en';
+</script>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#0B1026;color:#E6EAF5;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{display:flex;flex-wrap:wrap;min-height:100%}
+.stage{flex:999 1 560px;min-width:0;position:relative;height:100vh;min-height:520px;overflow:hidden;cursor:grab;touch-action:none;
+ background:
+  radial-gradient(1.5px 1.5px at 8% 12%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 22% 30%,#cfd6ff 50%,transparent 51%),
+  radial-gradient(1.5px 1.5px at 35% 8%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 48% 22%,#fff 50%,transparent 51%),
+  radial-gradient(2px 2px at 63% 14%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 77% 35%,#dfe4ff 50%,transparent 51%),
+  radial-gradient(1.5px 1.5px at 90% 10%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 14% 55%,#fff 50%,transparent 51%),
+  radial-gradient(1px 1px at 86% 58%,#fff 50%,transparent 51%),radial-gradient(1.5px 1.5px at 56% 46%,#e8ecff 50%,transparent 51%),
+  radial-gradient(1px 1px at 30% 70%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 70% 66%,#fff 50%,transparent 51%),
+  radial-gradient(circle at 50% 210%,#8d8b86 0 52%,#5e5c58 56%,rgba(0,0,0,0) 56.3%),
+  radial-gradient(ellipse at 50% 40%,#0d1430 0%,#03050c 75%)}
+.stage:active{cursor:grabbing}
+.viewport{position:absolute;inset:0;perspective:1900px;perspective-origin:50% 40%}
+.scene{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d}
+.obj{position:absolute;left:0;top:0;transform-style:preserve-3d}
+.f{position:absolute;left:0;top:0;backface-visibility:hidden;outline:1px solid rgba(0,0,0,.14)}
+.f2{position:absolute;left:0;top:0;outline:1px solid rgba(0,0,0,.18)}
+.anchor{position:absolute;left:0;top:0;width:1px;height:1px}
+.overlay{position:absolute;inset:0;pointer-events:none}
+.label{position:absolute;left:0;top:0;pointer-events:none}
+.label span{position:absolute;left:8px;top:-12px;white-space:nowrap;font-size:13px;font-weight:600;background:rgba(11,16,38,.88);border:1px solid #2A3A6E;color:#fff;padding:4px 8px;border-radius:8px}
+.label i{position:absolute;left:-5px;top:-5px;width:10px;height:10px;border-radius:50%;background:#FF8A50;box-shadow:0 0 0 3px rgba(255,138,80,.3)}
+.hide-labels .label{display:none}
+.hl .f,.hl .f2{outline:2px solid #FF8A50;filter:brightness(1.25)}
+.panel{flex:1 1 300px;padding:28px 24px;border-left:1px solid #1E2A52;background:#0E1532;overflow:auto;max-height:100vh}
+h1{margin:0 0 6px;font-size:22px;line-height:1.25}
+.sub{margin:0 0 20px;color:#B8C2DC;font-size:14px;line-height:1.5}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+button{font:inherit;font-size:14px;font-weight:600;color:#fff;background:#1B2550;border:1px solid #2A3A6E;border-radius:10px;padding:10px 14px;min-height:44px;cursor:pointer}
+button:hover{background:#24306a}
+button[aria-pressed="true"]{background:#FF8A50;border-color:#FF8A50;color:#1a0e06}
+ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+ol li button{width:100%;text-align:left;display:flex;flex-direction:column;gap:2px;background:#10183A;font-weight:500}
+ol li b{font-size:15px;color:#fff}
+ol li small{color:#A8B2CC;font-size:12px;line-height:1.4}
+.hint{position:absolute;left:16px;bottom:14px;font-size:13px;color:#E6EAF5;background:rgba(11,16,38,.75);padding:6px 10px;border-radius:8px;pointer-events:none}
+.note{margin-top:20px;font-size:12px;line-height:1.5;color:#A8B2CC}
+.facts{margin:0 0 20px;padding:12px 14px;background:#10183A;border:1px solid #1E2A52;border-radius:10px;font-size:13px;line-height:1.6;color:#C9D1E8}
+.facts b{color:#fff}
+figure{margin:20px 0 0}
+figure img{width:100%;border-radius:10px;border:1px solid #1E2A52;display:block}
+figcaption{font-size:12px;color:#A8B2CC;margin-top:6px}
+a{color:#8FB4FF}
+.embed .panel{display:none}
+.embed .wrap{min-height:0}
+.embed .stage{height:100vh;min-height:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="stage" id="stage" aria-label="3D model of the lunar module Snoopy. Drag to rotate" data-uk-aria="3D-модель місячного модуля Snoopy. Перетягуйте, щоб обертати">
+  <div class="viewport"><div class="scene" id="scene"></div></div>
+  <div class="overlay" id="overlay"></div>
+  <div class="hint" data-uk="Тягни, щоб обертати · коліщатко або два пальці — масштаб">Drag to rotate · scroll or pinch to zoom</div>
+ </div>
+ <aside class="panel">
+  <h1 data-uk="Apollo 10 — місячний модуль «Snoopy» (LM-4)">Apollo 10 — Lunar Module “Snoopy” (LM-4)</h1>
+  <p class="sub" data-uk="Місячний модуль, який у травні 1969 року спустився приблизно до 15,6 км над Місяцем — «генеральна репетиція» висадки Apollo 11. 3D-модель за фото та схемами NASA. Наведи на деталь у списку, щоб підсвітити її.">The lunar module that in May 1969 flew down to about 15.6 km above the Moon — the “dress rehearsal” for the Apollo 11 landing. 3D model based on NASA photos and diagrams. Hover over a part in the list to highlight it.</p>
+  <div class="facts" data-uk-html="
+   <b>Запуск:</b> 18 травня 1969, Saturn V<br>
+   <b>Екіпаж LM:</b> Томас Стаффорд і Юджин Сернан<br>
+   <b>Розміри:</b> висота ≈ 7 м, розмах опор ≈ 9 м<br>
+   <b>Посадковий ступінь:</b> відкинули на орбіті Місяця<br>
+   <b>Злітний ступінь:</b> після стикування його двигун увімкнули до кінця палива, і «Снупі» пішов на орбіту навколо Сонця — літає там і досі
+  ">
+   <b>Launch:</b> May 18, 1969, Saturn V<br>
+   <b>LM crew:</b> Thomas Stafford and Eugene Cernan<br>
+   <b>Size:</b> about 7 m tall, legs about 9 m across<br>
+   <b>Descent stage:</b> dropped in lunar orbit<br>
+   <b>Ascent stage:</b> after docking its engine was fired until the fuel ran out, and “Snoopy” went into orbit around the Sun — it is still there
+  </div>
+  <div class="btns">
+   <button id="bLabels" aria-pressed="true" data-uk="Підписи">Labels</button>
+   <button id="bSpin" aria-pressed="false" data-uk="Автообертання">Auto-rotate</button>
+   <button id="bNow" aria-pressed="false" data-uk="Як зараз (тільки «Снупі»)">As it is now (“Snoopy” only)</button>
+   <button id="bSide" data-uk="Вигляд збоку">Side view</button>
+   <button id="bTop" data-uk="Вигляд зверху">Top view</button>
+   <button id="bPersp" data-uk="Перспектива">Perspective</button>
+  </div>
+  <ol id="legend"></ol>
+  <p class="note"><span data-uk="Схематична навчальна модель: форма й пропорції відтворені приблизно, без точних креслень.">A schematic educational model: the shape and proportions are approximate, not from exact drawings.</span><br>
+  <span data-uk="Справжнє фото «Снупі» (AS10-34-5112):">Real photo of “Snoopy” (AS10-34-5112):</span> <a href="https://flic.kr/photos/nasacommons/53739348785" target="_blank" rel="noopener">NASA</a> · <span data-uk="Схеми злітного й посадкового ступенів:">Ascent and descent stage diagrams:</span> <a href="https://www.nasa.gov/history/diagrams/apollo.html" target="_blank" rel="noopener">NASA History</a></p>
+ </aside>
+</div>
+<script>
+if(window.LANGX==='uk'){document.documentElement.lang='uk';document.title='Apollo 10 — місячний модуль «Snoopy» — 3D-модель';
+ document.querySelectorAll('[data-uk]').forEach(e=>e.textContent=e.dataset.uk);
+ document.querySelectorAll('[data-uk-html]').forEach(e=>e.innerHTML=e.dataset.ukHtml);
+ document.querySelectorAll('[data-uk-aria]').forEach(e=>e.setAttribute('aria-label',e.dataset.ukAria));}
+(function(){
+const scene=document.getElementById('scene');
+const groups={};
+function shade(hex,k){const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;r=Math.min(255,r*k|0);g=Math.min(255,g*k|0);b=Math.min(255,b*k|0);return `rgb(${r},${g},${b})`}
+function grp(id){if(!groups[id]){const g=document.createElement('div');g.className='obj';g.dataset.part=id;scene.appendChild(g);groups[id]=g}return groups[id]}
+function el(parent,w,h,t,bg,cls,extra){const e=document.createElement('div');e.className=cls||'f';
+ e.style.cssText+=`width:${w}px;height:${h}px;margin-left:${-w/2}px;margin-top:${-h/2}px;transform:${t};background:${bg};${extra||''}`;parent.appendChild(e);return e}
+// box: x,y,z min corner (y up); bg per face {0:+z,1:-z,2:+x,3:-x,4:top,5:bottom}
+function box(parent,x,y,z,w,h,d,color,bg){
+ bg=bg||{};
+ const o=document.createElement('div');o.className='obj';
+ o.style.transform=`translate3d(${x+w/2}px,${-(y+h/2)}px,${z+d/2}px)`;
+ [[w,h,`translateZ(${d/2}px)`,0.85],[w,h,`rotateY(180deg) translateZ(${d/2}px)`,0.55],
+  [d,h,`rotateY(90deg) translateZ(${w/2}px)`,0.98],[d,h,`rotateY(-90deg) translateZ(${w/2}px)`,0.5],
+  [w,d,`rotateX(90deg) translateZ(${h/2}px)`,1.05],[w,d,`rotateX(-90deg) translateZ(${h/2}px)`,0.32]]
+ .forEach((f,i)=>el(o,f[0],f[1],f[2],bg[i]||shade(color,f[3])));
+ parent.appendChild(o);return o;
+}
+function wrap(parent,t){const o=document.createElement('div');o.className='obj';o.style.transform=t;parent.appendChild(o);return o}
+function poly(n){let p=[];for(let i=0;i<n;i++){const a=2*Math.PI*i/n+Math.PI/n;p.push(`${50+50*Math.cos(a)}% ${50+50*Math.sin(a)}%`)}return `polygon(${p.join(',')})`}
+// vertical prism: n sides, apothem r, from y0 to y0+h
+function prism(parent,n,r,y0,h,color,o){
+ o=o||{};const g=wrap(parent,`translate3d(0,${-(y0+h/2)}px,0)`);const side=2*r*Math.tan(Math.PI/n)+1;
+ for(let i=0;i<n;i++){const a=360/n*i;const lum=0.6+0.45*Math.max(0,Math.cos((a-40)*Math.PI/180));
+  el(g,side,h,`rotateY(${a}deg) translateZ(${r}px)`,o.side?`${o.side},${shade(color,lum)}`:shade(color,lum),'f',o.side?`filter:brightness(${lum+0.15})`:'')}
+ const R=r/Math.cos(Math.PI/n)*2;
+ el(g,R,R,`rotateX(90deg) rotateZ(${180/n}deg) translateZ(${h/2}px)`,o.top||shade(color,1.05),'f',`clip-path:${poly(n)}`);
+ el(g,R,R,`rotateX(-90deg) rotateZ(${180/n}deg) translateZ(${h/2}px)`,o.bot||shade(color,0.35),'f',`clip-path:${poly(n)}`);
+ return g;
+}
+// frustum: bottom radius r0 at y0, top radius r1 at y0+h (open, both sides visible)
+function frustum(parent,n,r0,r1,y0,h,color){
+ const g=wrap(parent,`translate3d(0,${-(y0+h/2)}px,0)`);
+ const c0=2*r0*Math.sin(Math.PI/n)+1,c1=2*r1*Math.sin(Math.PI/n)+1,W=Math.max(c0,c1);
+ const sl=Math.hypot(h,r0-r1),th=Math.atan2(r0-r1,h)*180/Math.PI,rm=(r0+r1)/2*Math.cos(Math.PI/n);
+ const a0=(W-c1)/2/W*100,b0=(W-c0)/2/W*100;
+ for(let i=0;i<n;i++){const a=360/n*i;const lum=0.55+0.5*Math.max(0,Math.cos((a-40)*Math.PI/180));
+  el(g,W,sl,`rotateY(${a}deg) translateZ(${rm}px) rotateX(${th}deg)`,shade(color,lum),'f2',
+   `clip-path:polygon(${a0}% 0,${100-a0}% 0,${100-b0}% 100%,${b0}% 100%)`)}
+ return g;
+}
+const UKN={asc:'Злітний ступінь («Снупі»)',win:'Вікна',hatch:'Передній люк',dock:'Стикувальний тунель',rr:'Радар зближення',sband:'Антена S-діапазону',rcs:'Блоки двигунів орієнтації',aft:'Задній приладовий відсік',desc:'Посадковий ступінь',deng:'Двигун посадки',legs:'Посадкові опори',ladder:'Драбина й площадка'};
+const END={asc:'Crew cabin for two astronauts, with its own engine and fuel to fly back to the command module',win:'Two triangular front windows and an overhead window for docking',hatch:'Front hatch: the way out onto the Moon on a real landing',dock:'Top hatch and tunnel for docking with the command module “Charlie Brown”',rr:'Rendezvous radar: found the command module in orbit',sband:'Steerable antenna for talking to Earth',rcs:'Four blocks of attitude-control thrusters (16 nozzles)',aft:'Rear bay with electronics and batteries',desc:'Descent stage in gold foil: fuel, oxygen and water; dropped in lunar orbit',deng:'Throttleable engine for a soft landing',legs:'Four legs with footpads and probes that signal touchdown',ladder:'Ladder on the front leg below the hatch and a small platform (“porch”) in front of the hatch'};
+const PARTS0=[
+ ['asc','Ascent stage (“Snoopy”)','Злітний ступінь: кабіна двох астронавтів, двигун і паливо для повернення до CM'],
+ ['win','Windows','Два трикутні передні вікна та верхнє вікно для стикування'],
+ ['hatch','Forward hatch','Передній люк: через нього виходили б на Місяць'],
+ ['dock','Docking tunnel','Верхній люк і тунель для стикування з командним модулем «Charlie Brown»'],
+ ['rr','Rendezvous radar','Радар зближення: шукав командний модуль на орбіті'],
+ ['sband','S-band antenna','Поворотна антена для зв’язку із Землею'],
+ ['rcs','RCS thruster quads','Чотири блоки двигунів орієнтації (16 сопел)'],
+ ['aft','Aft equipment bay','Задній відсік з електронікою та батареями'],
+ ['desc','Descent stage','Посадковий ступінь у золотистій термоплівці: паливо, кисень, вода; відкинули на орбіті Місяця'],
+ ['deng','Descent engine','Двигун з регульованою тягою — для м’якої посадки'],
+ ['legs','Landing gear','Чотири опори з «тарілками» та щупами, що сигналізують про торкання ґрунту'],
+ ['ladder','Ladder & porch','Драбина на передній опорі під люком і площадка («ґанок») перед люком']
+];
+const PARTS=PARTS0.map(([id,en,uk])=>window.LANGX==='uk'?[id,UKN[id],uk]:[id,en,END[id]]);
+const SIL='#b7bbc1',GRY='#9ea2a9',DK='#2b2d33',GOLDC='#c9a24a';
+const FOIL2='repeating-linear-gradient(115deg,rgba(255,235,170,.25) 0 4px,rgba(0,0,0,.10) 4px 11px),repeating-linear-gradient(10deg,rgba(0,0,0,.12) 0 2px,transparent 2px 17px)';
+function rodYZ(parent,x,y1,z1,y2,z2,t,color){
+ const ym=(y1+y2)/2,zm=(z1+z2)/2,L=Math.hypot(y2-y1,z2-z1),ang=Math.atan2(y2-y1,z2-z1)*180/Math.PI;
+ const w=wrap(parent,`translate3d(${x}px,${-ym}px,${zm}px) rotateX(${ang}deg)`);
+ box(w,-t/2,-t/2,-L/2,t,t,L,color);return w;
+}
+// ===== DESCENT STAGE =====
+const D=grp('desc');
+prism(D,8,82,-62,62,GOLDC,{side:FOIL2,top:'#a88a3e',bot:'#2a2a2a'});
+box(D,-60,-74,-60,120,12,120,'#222');
+const DE=grp('deng');
+frustum(DE,20,34,18,-112,38,'#5f6168');
+prism(DE,16,20,-76,4,'#3a3c41');
+// ----- Legs (front +z, right, back, left)
+const LG=grp('legs'),LD=grp('ladder');
+[0,90,180,270].forEach(a=>{
+ const w=wrap(LG,`rotateY(${a}deg)`);
+ rodYZ(w,0,-6,84,-128,176,7,'#cfd1d4');                 // primary strut
+ rodYZ(w,-26,-56,80,-120,168,4,'#a7aab0');              // secondary struts
+ rodYZ(w,26,-56,80,-120,168,4,'#a7aab0');
+ rodYZ(w,0,-40,84,-40,112,4,'#a7aab0');                 // deployment truss
+ const f=wrap(w,`translate3d(0,0,178px)`);
+ prism(f,16,20,-134,6,'#c8c9cc',{top:'#b5b7bb'});
+ if(a!==0) rodYZ(w,0,-134,178,-196,178,2.5,'#d8d8d8');  // contact probes
+ if(a===0){
+  // Ladder on the forward leg: runs down the OUTSIDE of the primary strut, from the porch
+  // under the forward hatch down to just above the footpad (as on the real LM).
+  const y1=-6,z1=84,y2=-128,z2=176,L=Math.hypot(y2-y1,z2-z1);
+  const dy=(y2-y1)/L,dz=(z2-z1)/L, ny=-dz,nz=dy;            // normal pointing out/away from the strut
+  const off=8;
+  const out=t=>{const y=y1+(y2-y1)*t, z=z1+(z2-z1)*t; return [y+(-ny)*off, z+(-nz)*off]};
+  const [ta,tb]=[0.06,0.9],[ya,za]=out(ta),[yb,zb]=out(tb);
+  [-10,10].forEach(x=>rodYZ(LD,x,ya,za,yb,zb,3,'#e2e3e5'));
+  for(let k=1;k<9;k++){const [y,z]=out(ta+(tb-ta)*k/9);box(LD,-10,y-1.5,z-1.5,20,3,3,'#e2e3e5')}
+  box(LD,-20,-3,80,40,3,26,'#d9dadd');                      // porch (platform under the hatch)
+  [-20,20].forEach(x=>rodYZ(LD,x,0,104,10,104,1.5,'#e2e3e5'));// porch handrails
+ }
+});
+// ===== ASCENT STAGE =====
+const A=grp('asc');
+box(A,-66,6,-46,132,100,62,SIL);                                   // mid cabin
+box(A,-72,4,16,144,92,52,'#c6c9ce',{0:'linear-gradient(#3a3d44,#2b2d33)'}); // forward cabin, dark front face
+box(A,-52,96,16,104,22,40,GRY);                                    // upper front (window housing)
+const T=grp('aft');
+box(T,-70,26,-112,140,72,66,'#3b3d43',{4:'#4a4c52'});
+box(T,-60,12,-106,120,14,54,'#55585f');
+// propellant tank bulges
+const TK=grp('asc');
+box(TK,-92,20,-40,26,60,46,'#d3d5d9');box(TK,66,20,-40,26,60,46,'#d3d5d9');
+// ----- Windows (triangles on front) + overhead docking window
+const W=grp('win');
+const GL='linear-gradient(135deg,#4b5e7d,#0c1018 65%)';
+el(W,42,36,'translate3d(-30px,-104px,57px) rotateX(-18deg)',GL,'f2','clip-path:polygon(0 0,100% 0,0 100%)');
+el(W,42,36,'translate3d(30px,-104px,57px) rotateX(-18deg)',GL,'f2','clip-path:polygon(0 0,100% 0,100% 100%)');
+el(W,14,14,'translate3d(-36px,-119px,20px) rotateX(90deg)',GL,'f2','');
+// ----- Forward hatch
+const H=grp('hatch');
+el(H,40,40,'translate3d(0px,-30px,68.6px)','#8f949c','f2','border:2px solid #c9ccd1');
+// ----- Docking tunnel + drogue
+const DK2=grp('dock');
+const dw=wrap(DK2,'translate3d(0,0,-14px)');
+prism(dw,18,24,106,30,'#c9ccd1',{top:'radial-gradient(circle,#1d1f24 0 35%,#8d9198 36% 60%,#c9ccd1 61%)'});
+// ----- Rendezvous radar (front top)
+const RR=grp('rr');
+box(RR,-6,118,10,12,14,12,GRY);
+const rd=wrap(RR,'translate3d(0,-142px,20px) rotateX(-65deg)');
+el(rd,40,40,'translateZ(0)','radial-gradient(circle,#f0f0f0 0 12%,#c4c6ca 13% 70%,#8b8f95 71%)','f2','border-radius:50%');
+el(rd,40,40,'translateZ(-1px) rotateY(180deg)','#6f737a','f2','border-radius:50%');
+// ----- S-band steerable antenna (right top)
+const SB=grp('sband');
+box(SB,58,104,-40,6,40,6,GRY);
+const sd=wrap(SB,'translate3d(61px,-152px,-37px) rotateY(60deg) rotateX(-20deg)');
+el(sd,36,36,'translateZ(0)','radial-gradient(circle,#e8e8e8 0 15%,#bfc2c6 16% 70%,#888c92 71%)','f2','border-radius:50%');
+el(sd,36,36,'translateZ(-1px) rotateY(180deg)','#6f737a','f2','border-radius:50%');
+// VHF antennas
+rodYZ(SB,-50,110,-80,150,-110,2.5,'#d0d2d6');
+// ----- RCS quads at four corners
+const Q=grp('rcs');
+[[-84,40],[84,40],[-84,-70],[84,-70]].forEach(([x,z])=>{
+ box(Q,x-10,84,z-10,20,20,20,'#d9dadd');
+ box(Q,x-3,104,z-3,6,12,6,DK);box(Q,x-3,72,z-3,6,12,6,DK);
+ box(Q,x+(x>0?10:-22),91,z-3,12,6,6,DK);
+ box(Q,x-3,91,z+(z>0?10:-22),6,6,12,DK);
+});
+// ----- Labels
+const LP={asc:[-92,40,60],win:[34,122,60],hatch:[0,10,72],dock:[10,148,-60],rr:[-56,150,50],sband:[70,176,-36],rcs:[96,100,-70],aft:[72,40,-112],desc:[86,-30,30],deng:[0,-118,0],legs:[178,-120,0],ladder:[16,-30,132]};
+const ov=document.getElementById('overlay');const labels=[];
+PARTS.forEach(([id,name])=>{const a=document.createElement('div');a.className='anchor';const p=LP[id];a.style.transform=`translate3d(${p[0]}px,${-p[1]}px,${p[2]}px)`;scene.appendChild(a);
+ const l=document.createElement('div');l.className='label';l.innerHTML=`<i></i><span>${name}</span>`;ov.appendChild(l);labels.push([l,a,id])});
+const lg=document.getElementById('legend');
+PARTS.forEach(([id,name,en])=>{const li=document.createElement('li');const b=document.createElement('button');b.innerHTML=`<b>${name}</b><small>${en}</small>`;
+ const on=()=>groups[id].classList.add('hl'),off=()=>groups[id].classList.remove('hl');
+ b.addEventListener('mouseenter',on);b.addEventListener('mouseleave',off);b.addEventListener('focus',on);b.addEventListener('blur',off);
+ li.appendChild(b);lg.appendChild(li)});
+// ----- View
+const SIDE={rx:-4,ry:0},TOP={rx:-80,ry:0},PERSP={rx:-16,ry:-32};
+let rx=PERSP.rx,ry=PERSP.ry,zoom=1,spin=false;
+function render(){
+ scene.style.transform=`scale(${zoom}) rotateX(${rx}deg) rotateY(${ry}deg)`;
+ const sr=ov.getBoundingClientRect();
+ labels.forEach(([l,a])=>{const r=a.getBoundingClientRect();l.style.transform=`translate(${r.left-sr.left}px,${r.top-sr.top}px)`});
+}
+const st=document.getElementById('stage');
+function fit(){const k=Math.min(st.clientWidth/560,st.clientHeight/560);zoom=window.EMBED?Math.max(.3,k*0.9):Math.max(.35,Math.min(1.2,k))}
+fit();render();window.addEventListener('resize',()=>{fit();render()});
+let drag=null;const pts=new Map();
+st.addEventListener('pointerdown',e=>{st.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);drag={x:e.clientX,y:e.clientY,rx,ry}});
+st.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,[e.clientX,e.clientY]);
+ if(pts.size===2){const [a,b]=[...pts.values()];const d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(drag.pd)zoom=Math.max(.3,Math.min(3,zoom*d/drag.pd));drag.pd=d;render();return}
+ ry=drag.ry+(e.clientX-drag.x)*0.4;rx=Math.max(-88,Math.min(30,drag.rx-(e.clientY-drag.y)*0.3));render()});
+const up=e=>{pts.delete(e.pointerId);if(pts.size===0)drag=null;else{const [a]=[...pts.values()];drag={x:a[0],y:a[1],rx,ry}}};
+st.addEventListener('pointerup',up);st.addEventListener('pointercancel',up);
+st.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.3,Math.min(3,zoom*(e.deltaY<0?1.08:0.93)));render()},{passive:false});
+function tick(){if(spin&&!drag){ry+=0.25;render()}requestAnimationFrame(tick)}tick();
+const tg=(b,v)=>b.setAttribute('aria-pressed',String(v));
+const bl=document.getElementById('bLabels');bl.onclick=()=>{const v=bl.getAttribute('aria-pressed')!=='true';tg(bl,v);st.classList.toggle('hide-labels',!v)};
+const bs=document.getElementById('bSpin');bs.onclick=()=>{spin=!spin;tg(bs,spin)};
+const view=v=>()=>{rx=v.rx;ry=v.ry;spin=false;tg(bs,false);fit();render()};
+document.getElementById('bSide').onclick=view(SIDE);
+document.getElementById('bTop').onclick=view(TOP);
+document.getElementById('bPersp').onclick=view(PERSP);
+const DESC=['desc','deng','legs','ladder'];const bn=document.getElementById('bNow');
+bn.onclick=()=>{const v=bn.getAttribute('aria-pressed')!=='true';tg(bn,v);
+ DESC.forEach(id=>groups[id].style.display=v?'none':'');
+ labels.forEach(([l,a,id])=>{if(DESC.includes(id))l.style.visibility=v?'hidden':''});
+ document.querySelectorAll('#legend li').forEach((li,i)=>{if(DESC.includes(PARTS[i][0]))li.style.opacity=v?.35:1});render()};
+})();
+
+</script>
+</body>
+</html>

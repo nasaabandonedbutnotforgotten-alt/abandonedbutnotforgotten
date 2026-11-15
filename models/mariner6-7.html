@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>
+/* Режим вбудовування: ?embed=mini (мітка на планеті) або ?embed=card (у картці сайту) */
+window.EMBED=new URLSearchParams(location.search).get('embed');
+if(window.EMBED)document.documentElement.classList.add('embed','embed-'+window.EMBED);
+</script>
+<style>
+.embed .panel{display:none}
+.embed .wrap{min-height:0}
+.embed .stage{height:100vh;min-height:0}
+html.embed-mini,.embed-mini body{background:transparent!important;overflow:hidden}
+.embed-mini .stage{background:transparent!important;cursor:default}
+.embed-mini .scene{left:50%!important;top:60%!important}
+.embed-mini .overlay,.embed-mini .hint,.embed-mini .shadow,.embed-mini .status{display:none!important}
+.embed-card .hint{font-size:11px;left:8px;bottom:8px}
+.embed-card .label span{font-size:11px;padding:3px 6px}
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mariner 6 &amp; 7 — 3D model</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#0B1026;color:#E6EAF5;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{display:flex;flex-wrap:wrap;min-height:100%}
+.stage{flex:999 1 560px;min-width:0;position:relative;height:100vh;min-height:520px;overflow:hidden;cursor:grab;touch-action:none;
+ background:
+  radial-gradient(1.5px 1.5px at 8% 12%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 22% 70%,#fff 50%,transparent 51%),
+  radial-gradient(1.5px 1.5px at 35% 30%,#dfe8ff 50%,transparent 51%),radial-gradient(1px 1px at 48% 88%,#fff 50%,transparent 51%),
+  radial-gradient(2px 2px at 63% 18%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 74% 55%,#fff 50%,transparent 51%),
+  radial-gradient(1.5px 1.5px at 86% 80%,#ffe9c9 50%,transparent 51%),radial-gradient(1px 1px at 93% 34%,#fff 50%,transparent 51%),
+  radial-gradient(1px 1px at 14% 44%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 57% 64%,#cfe0ff 50%,transparent 51%),
+  radial-gradient(ellipse 70% 60% at 70% 20%,rgba(70,60,140,.35),transparent 70%),
+  linear-gradient(180deg,#05071a 0%,#0b0f2c 60%,#120c2e 100%)}
+.stage:active{cursor:grabbing}
+.viewport{position:absolute;inset:0;perspective:1800px;perspective-origin:50% 40%}
+.scene{position:absolute;left:50%;top:52%;width:0;height:0;transform-style:preserve-3d}
+.obj{position:absolute;left:0;top:0;transform-style:preserve-3d}
+.f{position:absolute;left:0;top:0;backface-visibility:hidden;outline:1px solid rgba(0,0,0,.14)}
+.f2{position:absolute;left:0;top:0}
+
+.anchor{position:absolute;left:0;top:0;width:1px;height:1px}
+.overlay{position:absolute;inset:0;pointer-events:none}
+.label{position:absolute;left:0;top:0;pointer-events:none}
+.label span{position:absolute;left:8px;top:-12px;white-space:nowrap;font-size:13px;font-weight:600;background:rgba(11,16,38,.88);border:1px solid #2A3A6E;color:#fff;padding:4px 8px;border-radius:8px}
+.label i{position:absolute;left:-5px;top:-5px;width:10px;height:10px;border-radius:50%;background:#FF8A50;box-shadow:0 0 0 3px rgba(255,138,80,.3)}
+.hide-labels .label{display:none}
+.label.minor{display:none}.label.minor.show{display:block}
+.scene .hl .f,.scene .hl .f2{outline:2px solid #FF8A50;filter:brightness(1.3)!important}
+.panel{flex:1 1 300px;padding:28px 24px;border-left:1px solid #1E2A52;background:#0E1532;overflow:auto;max-height:100vh}
+h1{margin:0 0 6px;font-size:22px;line-height:1.25}
+.sub{margin:0 0 20px;color:#B8C2DC;font-size:14px;line-height:1.5}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+button{font:inherit;font-size:14px;font-weight:600;color:#fff;background:#1B2550;border:1px solid #2A3A6E;border-radius:10px;padding:10px 14px;min-height:44px;cursor:pointer}
+button:hover{background:#24306a}
+button[aria-pressed="true"]{background:#FF8A50;border-color:#FF8A50;color:#1a0e06}
+ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+ol li button{width:100%;text-align:left;display:flex;flex-direction:column;gap:2px;background:#10183A;font-weight:500}
+ol li b{font-size:15px;color:#fff}
+ol li small{color:#A8B2CC;font-size:12px;line-height:1.4}
+.hint{position:absolute;left:16px;bottom:14px;font-size:13px;color:#E6EAF5;background:rgba(11,16,38,.75);padding:6px 10px;border-radius:8px;pointer-events:none}
+.note{margin-top:20px;font-size:12px;line-height:1.5;color:#A8B2CC}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="stage" id="stage" aria-label="3D model of the Mariner 6 and 7 spacecraft. Drag to rotate">
+  <div class="viewport"><div class="scene" id="scene"></div></div>
+  <div class="overlay" id="overlay"></div>
+  <div class="hint">Drag to rotate · scroll or pinch to zoom</div>
+ </div>
+ <aside class="panel">
+  <h1>Mariner 6 &amp; 7</h1>
+  <p class="sub">NASA/JPL, 1969 — twin spacecraft that flew past Mars five days apart and mapped it with cameras and spectrometers. 3D model based on the NASA diagram. Hover over a part in the list to highlight it.</p>
+  <div class="btns">
+   <button id="bLabels" aria-pressed="true">Labels</button>
+   <button id="bSpin" aria-pressed="false">Auto-rotate</button>
+   <button id="bView">View as in the diagram</button>
+   <button id="bBlanket" aria-pressed="false">Scan platform blanket</button>
+  </div>
+  <ol id="legend"></ol>
+  <p class="note">Mariner 6 flew past Mars on July 31, 1969, and Mariner 7 on August 5, 1969, both about 3,400 km above the surface. Together they sent back about 200 pictures. Both spacecraft are still circling the Sun. The model is schematic; proportions are approximate. In the diagram the silver thermal blanket of the scan platform is removed — use the button to put it back, as in the photo.</p>
+ </aside>
+</div>
+<script>
+(function(){
+const scene=document.getElementById('scene');
+const groups={};const bbs=[];
+function shade(hex,k){const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;r=Math.min(255,r*k|0);g=Math.min(255,g*k|0);b=Math.min(255,b*k|0);return `rgb(${r},${g},${b})`}
+function grp(id){if(!groups[id]){const g=document.createElement('div');g.className='obj';g.dataset.part=id;scene.appendChild(g);groups[id]=g}return groups[id]}
+function wrap(parent,t){const o=document.createElement('div');o.className='obj';o.style.transform=t;parent.appendChild(o);return o}
+function box(parent,x,y,z,w,h,d,color,bg){
+ bg=bg||{};const o=document.createElement('div');o.className='obj';
+ o.style.transform=`translate3d(${x+w/2}px,${-(y+h/2)}px,${z+d/2}px)`;
+ const faces=[[w,h,`translateZ(${d/2}px)`,0.85],[w,h,`rotateY(180deg) translateZ(${d/2}px)`,0.55],
+  [d,h,`rotateY(90deg) translateZ(${w/2}px)`,0.98],[d,h,`rotateY(-90deg) translateZ(${w/2}px)`,0.5],
+  [w,d,`rotateX(90deg) translateZ(${h/2}px)`,1.05],[w,d,`rotateX(-90deg) translateZ(${h/2}px)`,0.32]];
+ faces.forEach((f,i)=>{const e=document.createElement('div');e.className='f';e.style.width=f[0]+'px';e.style.height=f[1]+'px';
+  e.style.marginLeft=(-f[0]/2)+'px';e.style.marginTop=(-f[1]/2)+'px';e.style.transform=f[2];e.style.background=bg[i]||shade(color,f[3]);o.appendChild(e)});
+ parent.appendChild(o);return o;
+}
+function rod(parent,p,q,t,color){
+ const dx=q[0]-p[0],dy=-(q[1]-p[1]),dz=q[2]-p[2];const L=Math.hypot(dx,dy,dz);
+ const b=Math.asin(dy/L)*180/Math.PI,a=Math.atan2(-dz,dx)*180/Math.PI;
+ const o=wrap(parent,`translate3d(${(p[0]+q[0])/2}px,${-(p[1]+q[1])/2}px,${(p[2]+q[2])/2}px) rotateY(${a}deg) rotateZ(${b}deg)`);
+ box(o,-L/2,-t/2,-t/2,L,t,t,color);return o;
+}
+function sphere(parent,x,y,z,r,c1,c2){
+ const e=document.createElement('div');e.className='f2';
+ e.style.cssText+=`width:${2*r}px;height:${2*r}px;margin-left:${-r}px;margin-top:${-r}px;border-radius:50%;background:radial-gradient(circle at 62% 35%,#fff 0 5%,${c1} 22%,${c2} 100%)`;
+ const o=wrap(parent,`translate3d(${x}px,${-y}px,${z}px)`);o.appendChild(e);bbs.push(e);return o;
+}
+function cyl(parent,x,y,z,r,h,color,N,cap,pre){
+ N=N||14;const o=wrap(parent,`translate3d(${x}px,${-y}px,${z}px) ${pre||''}`);const chord=2*r*Math.sin(Math.PI/N)+1;
+ for(let i=0;i<N;i++){const a=360/N*i;const e=document.createElement('div');e.className='f2';
+  e.style.cssText+=`width:${chord}px;height:${h}px;margin-left:${-chord/2}px;margin-top:${-h/2}px;background:${shade(color,0.55+0.5*Math.max(0,Math.cos((a-40)*Math.PI/180)))};transform:rotateY(${a}deg) translateZ(${r}px)`;o.appendChild(e)}
+ [h/2,-h/2].forEach((yy,k)=>{const d=document.createElement('div');d.className='f2';d.style.cssText+=`width:${2*r}px;height:${2*r}px;margin-left:${-r}px;margin-top:${-r}px;border-radius:50%;background:${k===0&&cap?cap:shade(color,k?0.4:1.0)};transform:translateY(${-yy}px) rotateX(90deg)`;o.appendChild(d)});
+ return o;
+}
+const pol=(r,deg,y)=>[r*Math.cos(deg*Math.PI/180),y,r*Math.sin(deg*Math.PI/180)];
+
+const PARTS=[
+ ['lga','Low-gain antenna','Small dish on top of the tall mast — worked in any direction'],
+ ['hga','High-gain antenna','Parabolic dish about 1 m across on a tripod feed — sent the Mars pictures home'],
+ ['solar','Solar panels','Four long panels on white trusses'],
+ ['jets','Attitude-control gas jets','Small nitrogen jets at the panel tips turned and steadied the spacecraft'],
+ ['bus','Octagonal body','Eight electronics bays around a central fuel tank'],
+ ['louvers','Thermal control louvers','Opened and closed like blinds to keep the electronics at the right temperature'],
+ ['prop','Propulsion port','Opening for the course-correction rocket engine'],
+ ['scan','Scan platform','Turned the instruments toward Mars during the flyby'],
+ ['wtv','Wide-angle TV','Took wide views of the Martian surface'],
+ ['ntv','Narrow-angle TV','Telephoto camera for close-up detail'],
+ ['irr','IR radiometer','Measured the temperature of the surface'],
+ ['uvs','UV spectrometer','Studied the gases of the upper atmosphere'],
+ ['irs','IR spectrometer','Studied the chemistry of the atmosphere and surface'],
+ ['blanket','Thermal blanket','Shiny foil wrap that kept the scan platform warm']
+];
+const GOLD='#d9b65b',SILV='#c9ccd2',DARK='#3a3d46',CREAM='#e9e3d2';
+// ----- Octagonal body
+const B=grp('bus');
+cyl(B,0,0,0,70,46,'#b8bcc6',8,'radial-gradient(circle,#d8dbe2 0 40%,#c5c9d1 41% 100%)');
+cyl(B,0,-28,0,62,10,'#9ca1ab',8,null);
+// ----- Louvers on six faces
+const LV=grp('louvers');
+[0,1,2,4,5,6].forEach(i=>{
+ const a=22.5+45*i;
+ const o=wrap(LV,`rotateY(${-a}deg) translateZ(65px)`);
+ const e=document.createElement('div');e.className='f2';
+ e.style.cssText+=`width:44px;height:40px;margin-left:-22px;margin-top:-20px;background:repeating-linear-gradient(90deg,#f1f2f5 0 4px,#8d929c 4px 5px);outline:2px solid #6f7480`;
+ o.appendChild(e);
+});
+// ----- Propulsion port on the remaining face
+const P=grp('prop');
+cyl(P,0,0,0,14,10,'#9fa4ad',14,'radial-gradient(circle,#1a1a1a 0 35%,#7a7f88 36% 50%,#c5c9d1 51%)',`rotateY(${-(22.5+135)}deg) translateZ(68px) rotateX(90deg)`);
+// ----- Solar panels: long, on white trusses (as in the photo)
+const S=grp('solar'),J=grp('jets');
+const PL=215,PW=82;
+[45,135,225,315].forEach(a=>{
+ const o=wrap(S,`rotateY(${-a}deg) translateX(${70+PL/2}px) translateY(-18px)`);
+ const top=document.createElement('div');top.className='f2';
+ top.style.cssText+=`width:${PL}px;height:${PW}px;margin-left:${-PL/2}px;margin-top:${-PW/2}px;transform:rotateX(90deg);
+  background:repeating-linear-gradient(90deg,rgba(220,225,235,.5) 0 1px,transparent 1px 11px),repeating-linear-gradient(0deg,rgba(220,225,235,.4) 0 1px,transparent 1px 11px),
+  linear-gradient(135deg,#1d2a5a,#2e3f7c 50%,#1a2550);outline:3px solid ${CREAM}`;
+ o.appendChild(top);
+ // біла ферма знизу з отворами
+ const bot=document.createElement('div');bot.className='f2';
+ bot.style.cssText+=`width:${PL}px;height:${PW}px;margin-left:${-PL/2}px;margin-top:${-PW/2}px;transform:translateY(12px) rotateX(-90deg);
+  background:repeating-linear-gradient(60deg,transparent 0 16px,#cfc8b4 16px 19px),repeating-linear-gradient(-60deg,transparent 0 16px,#cfc8b4 16px 19px),${CREAM}`;
+ o.appendChild(bot);
+ [-PW/2,PW/2].forEach(z=>{const sd=document.createElement('div');sd.className='f2';
+  sd.style.cssText+=`width:${PL}px;height:12px;margin-left:${-PL/2}px;margin-top:-6px;transform:translateY(6px) translateZ(${z}px) rotateY(${z<0?180:0}deg);
+   background:radial-gradient(circle at 50% 50%,#6d6a62 0 2px,transparent 2.5px) 0 0/11px 12px,${CREAM};outline:1px solid #b9b29e`;o.appendChild(sd)});
+ // газові струмені на кінці панелі
+ const tip=pol(70+PL,a,-18);
+ cyl(J,tip[0],tip[1]+6,tip[2],4,12,'#7d828c',10,'#222');
+ rod(J,tip,[tip[0],tip[1]+26,tip[2]],1.4,'#d0d3da');               // антенка-стрижень
+ box(J,tip[0]-5,tip[1]-6,tip[2]-5,10,8,10,'#b7bbc4');
+});
+// ----- High-gain antenna: tilted parabolic dish with a tripod feed
+const H=grp('hga');
+const hgT=wrap(H,`translate3d(-26px,-70px,10px) rotateZ(28deg) rotateX(-14deg)`);
+const NS=24,R0=8,R1=50,DH=18;
+for(let i=0;i<NS;i++){
+ const ang=360/NS*i,slant=Math.hypot(R1-R0,DH),tilt=Math.atan2(DH,R1-R0)*180/Math.PI;
+ const wTop=2*R1*Math.tan(Math.PI/NS)+1,wBot=2*R0*Math.tan(Math.PI/NS)+1;
+ const seg=wrap(hgT,`rotateY(${ang}deg) translateZ(${(R0+R1)/2}px) translateY(${-DH/2}px) rotateX(${-(90-tilt)}deg)`);
+ const e=document.createElement('div');e.className='f2';
+ const k=0.6+0.4*Math.max(0,Math.cos((ang-200)*Math.PI/180)),c=v=>Math.round(v*k);
+ e.style.cssText+=`width:${wTop}px;height:${slant}px;margin-left:${-wTop/2}px;margin-top:${-slant/2}px;clip-path:polygon(0 0,100% 0,${50+50*wBot/wTop}% 100%,${50-50*wBot/wTop}% 100%);background:rgb(${c(225)},${c(228)},${c(234)})`;
+ seg.appendChild(e);
+}
+// триніжок над тарілкою
+[0,120,240].forEach(a=>{const p=pol(R1-4,a,DH);rod(hgT,p,[0,DH+30,0],1.8,'#3b3e46')});
+box(hgT,-4,DH+28,-4,8,6,8,'#3b3e46');
+// опора тарілки до корпусу
+rod(H,[-10,24,4],[-24,70,10],3,SILV);rod(H,[10,24,-6],[-22,66,6],3,SILV);
+// ----- Low-gain antenna on a tall mast
+const L=grp('lga');
+cyl(L,20,150,-10,3.5,250,SILV,10);
+cyl(L,20,276,-10,13,4,'#e8e9ec',16,'radial-gradient(circle,#fff 0 30%,#cfd2d8 70%)');
+cyl(L,20,281,-10,8,6,'#cfd2d8',14);
+// ----- Scan platform under the body with five instruments
+const SC=grp('scan');
+box(SC,-48,-52,-34,96,10,68,'#8d929c');
+rod(SC,[0,-24,0],[0,-42,0],10,'#6f7480');
+const WT=grp('wtv');cyl(WT,-26,-68,14,10,22,'#2b2d33',16,'radial-gradient(circle,#0a0a0a 0 45%,#555 46%)',`rotateX(70deg)`);
+const NT=grp('ntv');cyl(NT,8,-74,6,13,40,'#e6e7ea',18,'radial-gradient(circle,#0a0a0a 0 40%,#444 41%)',`rotateX(70deg)`);
+const IRR=grp('irr');box(IRR,-44,-74,-6,16,14,14,'#4a4e58');cyl(IRR,-36,-80,10,4,6,'#111',10,'#333',`rotateX(90deg)`);
+const UV=grp('uvs');box(UV,-14,-80,-26,22,18,22,'#6b6f79');
+const IRS=grp('irs');box(IRS,26,-78,-26,30,22,26,'#cfd2d8');cyl(IRS,40,-86,0,7,8,'#333',12,'#111',`rotateX(90deg)`);
+// ----- Thermal blanket (shiny foil, hidden by default as in the diagram)
+const BL=grp('blanket');BL.style.display='none';
+const bo=wrap(BL,`translate3d(0,66px,0)`);
+for(let i=0;i<10;i++){
+ const e=document.createElement('div');e.className='f2';
+ e.style.cssText+=`width:112px;height:60px;margin-left:-56px;margin-top:-30px;border-radius:40% 45% 50% 38%;
+  background:conic-gradient(from ${i*37}deg,#f4f5f8,#8a8f99,#e9ebf0,#6f7480,#fafbfd,#9aa0aa,#f4f5f8);opacity:.96;
+  transform:rotateY(${i*18}deg) scaleX(${0.85+0.15*Math.sin(i)})`;
+ bo.appendChild(e);
+}
+// ----- Label positions
+const LP={lga:[20,284,-10],hga:[-74,90,10],solar:pol(70+150,315,-18),jets:pol(70+PL,45,10),bus:pol(70,200,0),louvers:pol(66,68,0),
+ prop:pol(70,158,0),scan:[48,-50,0],wtv:[-28,-80,26],ntv:[10,-92,26],irr:[-44,-74,6],uvs:[-4,-88,-16],irs:[50,-82,-10],blanket:[56,-66,0]};
+const MAJOR=['lga','hga','solar','jets','bus','scan'];   // дрібні підписи — лише при наведенні в списку
+const ov=document.getElementById('overlay');const labels=[];
+const LBL={};
+PARTS.forEach(([id,name])=>{const a=document.createElement('div');a.className='anchor';const p=LP[id];a.style.transform=`translate3d(${p[0]}px,${-p[1]}px,${p[2]}px)`;scene.appendChild(a);
+ const l=document.createElement('div');l.className='label'+(MAJOR.includes(id)?'':' minor');l.innerHTML=`<i></i><span>${name}</span>`;ov.appendChild(l);labels.push([l,a]);LBL[id]=l});
+const lg=document.getElementById('legend');
+PARTS.forEach(([id,name,en])=>{const li=document.createElement('li');const b=document.createElement('button');b.innerHTML=`<b>${name}</b><small>${en}</small>`;
+ const on=()=>{groups[id].classList.add('hl');LBL[id].classList.add('show')},off=()=>{groups[id].classList.remove('hl');LBL[id].classList.remove('show')};
+ b.addEventListener('mouseenter',on);b.addEventListener('mouseleave',off);b.addEventListener('focus',on);b.addEventListener('blur',off);li.appendChild(b);lg.appendChild(li)});
+// ----- View
+const VIEW={rx:-14,ry:-30};
+let rx=VIEW.rx,ry=VIEW.ry,zoom=1,spin=window.EMBED==='mini';
+function render(){
+ scene.style.transform=`scale(${zoom}) rotateX(${rx}deg) rotateY(${ry}deg)`;
+ const bt=`rotateY(${-ry}deg) rotateX(${-rx}deg)`;bbs.forEach(e=>e.style.transform=bt);
+ const sr=ov.getBoundingClientRect();
+ labels.forEach(([l,a])=>{const r=a.getBoundingClientRect();l.style.transform=`translate(${r.left-sr.left}px,${r.top-sr.top}px)`});
+}
+const st=document.getElementById('stage');
+function fit(){const k=Math.min(st.clientWidth/820,st.clientHeight/640);zoom=window.EMBED?k*0.95:Math.max(.45,Math.min(1.5,k))}
+fit();render();window.addEventListener('resize',()=>{fit();render()});
+let drag=null;const pts=new Map();
+st.addEventListener('pointerdown',e=>{st.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);drag={x:e.clientX,y:e.clientY,rx,ry}});
+st.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,[e.clientX,e.clientY]);
+ if(pts.size===2){const [a,b]=[...pts.values()];const d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(drag.pd)zoom=Math.max(.35,Math.min(3,zoom*d/drag.pd));drag.pd=d;render();return}
+ ry=drag.ry+(e.clientX-drag.x)*0.4;rx=Math.max(-85,Math.min(10,drag.rx-(e.clientY-drag.y)*0.3));render()});
+const up2=e=>{pts.delete(e.pointerId);if(pts.size===0)drag=null;else{const [a]=[...pts.values()];drag={x:a[0],y:a[1],rx,ry}}};
+st.addEventListener('pointerup',up2);st.addEventListener('pointercancel',up2);
+st.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.35,Math.min(3,zoom*(e.deltaY<0?1.08:0.93)));render()},{passive:false});
+function tick(){if(spin&&!drag){ry+=0.15;render()}requestAnimationFrame(tick)}tick();
+const tg=(b,v)=>b.setAttribute('aria-pressed',String(v));
+const bl=document.getElementById('bLabels');bl.onclick=()=>{const v=bl.getAttribute('aria-pressed')!=='true';tg(bl,v);st.classList.toggle('hide-labels',!v)};
+const bs=document.getElementById('bSpin');bs.onclick=()=>{spin=!spin;tg(bs,spin)};
+const bb=document.getElementById('bBlanket');bb.onclick=()=>{const v=bb.getAttribute('aria-pressed')!=='true';tg(bb,v);groups.blanket.style.display=v?'':'none';['wtv','ntv','irr','uvs','irs'].forEach(k=>groups[k].style.visibility=v?'hidden':'');render()};
+document.getElementById('bView').onclick=()=>{rx=VIEW.rx;ry=VIEW.ry;spin=false;tg(bs,false);fit();render()};
+// на планеті: кут огляду задає сайт
+if(window.EMBED==='mini'){spin=false;window.addEventListener('message',e=>{const d=e.data||{};if(d.type==='pose'){rx=d.rx;if(d.ry!==undefined)ry=d.ry;render()}})}
+})();
+</script>
+<script src="models-uk.js"></script>
+</body>
+</html>

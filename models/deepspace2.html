@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deep Space 2 — 3D model</title>
+<style>
+  html,body{margin:0;height:100%;overflow:hidden;background:#c48f72;font-family:"Segoe UI",Roboto,Arial,sans-serif;color:#fff}
+  #stage{position:fixed;inset:0}
+  canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  #scene{cursor:grab;touch-action:none}
+  #scene.drag{cursor:grabbing}
+  #tags{position:absolute;inset:0;pointer-events:none}
+  .tag{position:absolute;left:0;top:0;pointer-events:none;transition:opacity .2s}
+  .dot{position:absolute;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;border-radius:50%;
+       background:#ff8a3d;box-shadow:0 0 0 2px rgba(255,138,61,.28),0 0 8px rgba(255,138,61,.6);pointer-events:auto;cursor:pointer}
+  .pill{position:absolute;white-space:nowrap;font-size:12.5px;font-weight:600;line-height:1;padding:5px 8px;border-radius:6px;
+        background:rgba(14,20,46,.92);border:1px solid rgba(255,255,255,.2);pointer-events:auto;cursor:pointer;
+        transition:border-color .15s,background .15s}
+  .tag.on .pill{border-color:#ff8a3d;background:rgba(48,28,10,.94)}
+  .tag.dim{opacity:.35}
+  #hint{position:absolute;left:12px;bottom:12px;font-size:12px;color:#fff;background:rgba(14,20,46,.85);padding:6px 10px;border-radius:7px;pointer-events:none}
+  @media (max-width:480px){.pill{font-size:11px;padding:4px 6px}#hint{font-size:11px}}
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="bg"></canvas>
+  <canvas id="scene"></canvas>
+  <div id="tags"></div>
+</div>
+<div id="hint"></div>
+<script>
+(() => {
+const LANG = (/(^|[?&])lang=(uk|ua)\b/i.test(location.search) || (()=>{try{return localStorage.getItem('lang')==='uk'||(parent!==window&&parent.LANG==='uk')}catch(e){return false}})()) ? 'uk' : 'en';
+document.documentElement.lang = LANG;
+// ================= geometry =================
+const V = [];          // vertices [x,y,z]
+const T = [];          // triangles {i:[a,b,c], c:[r,g,b], p:part}
+const hex = h => [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)];
+const add = (a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]];
+const sub = (a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]];
+const mul = (a,s)=>[a[0]*s,a[1]*s,a[2]*s];
+const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+const norm = a => { const l=Math.hypot(a[0],a[1],a[2])||1; return [a[0]/l,a[1]/l,a[2]/l]; };
+const vtx = p => (V.push(p), V.length-1);
+let BIAS=0;
+const tri = (a,b,c,col,part) => T.push({i:[a,b,c], c:hex(col), p:part, b:BIAS});
+const quad = (a,b,c,d,col,part) => { tri(a,b,c,col,part); tri(a,c,d,col,part); };
+const polar = (r,deg,y) => { const t=deg*Math.PI/180; return [r*Math.cos(t), y, r*Math.sin(t)]; };
+function basis(a){ a=norm(a); const h = Math.abs(a[1])<.9?[0,1,0]:[1,0,0]; const u=norm(cross(a,h)); const v=cross(a,u); return [a,u,v]; }
+
+// oriented box: center, half-extents along ex,ey,ez
+function obox(c, ex, ey, ez, hx, hy, hz, col, part){
+  ex=norm(ex); ey=norm(ey); ez=norm(ez);
+  const P=[]; for (const sx of [-1,1]) for (const sy of [-1,1]) for (const sz of [-1,1])
+    P.push(vtx(add(c, add(mul(ex,sx*hx), add(mul(ey,sy*hy), mul(ez,sz*hz))))));
+  const f=[[0,1,3,2],[4,6,7,5],[0,4,5,1],[2,3,7,6],[0,2,6,4],[1,5,7,3]];
+  for (const q of f) quad(P[q[0]],P[q[1]],P[q[2]],P[q[3]],col,part);
+}
+const box = (c,sx,sy,sz,col,part,rotDeg=0) => {
+  const t=rotDeg*Math.PI/180; obox(c,[Math.cos(t),0,Math.sin(t)],[0,1,0],[-Math.sin(t),0,Math.cos(t)],sx/2,sy/2,sz/2,col,part);
+};
+function beam(p1,p2,w,col,part){ const d=sub(p2,p1), L=Math.hypot(...d); const [a,u,v]=basis(d);
+  obox(mul(add(p1,p2),.5),a,u,v,L/2,w/2,w/2,col,part); }
+// frustum along axis
+function cyl(base, axis, r0, r1, h, seg, col, part, capB=true, capT=true, col2){
+  const [a,u,v]=basis(axis); const top=add(base,mul(a,h)); const R0=[],R1=[];
+  for(let k=0;k<seg;k++){ const t=k/seg*2*Math.PI, cu=Math.cos(t), sv=Math.sin(t);
+    const off=(r)=>add(mul(u,cu*r),mul(v,sv*r));
+    R0.push(vtx(add(base,off(r0)))); R1.push(vtx(add(top,off(r1)))); }
+  for(let k=0;k<seg;k++){ const n=(k+1)%seg; quad(R0[k],R0[n],R1[n],R1[k],col,part); }
+  if(capB && r0>0){ const c=vtx(base); for(let k=0;k<seg;k++) tri(c,R0[(k+1)%seg],R0[k],col2||col,part); }
+  if(capT && r1>0){ const c=vtx(top);  for(let k=0;k<seg;k++) tri(c,R1[k],R1[(k+1)%seg],col2||col,part); }
+}
+function ellipsoid(c, rx, ry, rz, nu, nv, col, part){
+  const G=[]; for(let j=0;j<=nv;j++){ const ph=j/nv*Math.PI; const row=[];
+    for(let i=0;i<nu;i++){ const th=i/nu*2*Math.PI;
+      row.push(vtx([c[0]+rx*Math.sin(ph)*Math.cos(th), c[1]+ry*Math.cos(ph), c[2]+rz*Math.sin(ph)*Math.sin(th)])); }
+    G.push(row); }
+  for(let j=0;j<nv;j++) for(let i=0;i<nu;i++){ const n=(i+1)%nu; quad(G[j][i],G[j][n],G[j+1][n],G[j+1][i],col,part); }
+}
+// ring disc subdivided (better depth sorting)
+function disc(y, rIn, rOut, rings, seg, col, part){
+  for(let r=0;r<rings;r++){ const a=rIn+(rOut-rIn)*r/rings, b=rIn+(rOut-rIn)*(r+1)/rings;
+    for(let k=0;k<seg;k++){ const t0=k/seg*360, t1=(k+1)/seg*360;
+      quad(vtx(polar(a,t0,y)),vtx(polar(b,t0,y)),vtx(polar(b,t1,y)),vtx(polar(a,t1,y)),col,part); } }
+}
+
+
+// ---------- build Deep Space 2 microprobe after impact (units: decimetres = 10 cm) ----------
+// Sources: NASA/JPL DS2 fact sheets; Smrekar et al., JGR 104 (1999).
+// Aftbody: Ø136 mm × 105 mm, antenna 127 mm. Forebody: Ø35 mm × 105.6 mm, 0.3–1 m deep.
+// Tether: 1 m flexible cable. Crater ≈ 0.5 m wide × 0.1 m deep. Aeroshell (SiC) shatters on impact.
+let seed=7; const rnd=()=>((seed=(seed*16807)%2147483647)/2147483647);
+const vary=(h,k)=>{ const c=hex(h).map(v=>Math.max(0,Math.min(255,v*k|0))); return '#'+c.map(v=>v.toString(16).padStart(2,'0')).join(''); };
+const S=4.5, STEP=0.3, XC=-0.3, BOT=-7.5, RC=2.5, CD=1.0;
+const hgt=(x,z)=>{ const r=Math.hypot(x,z); let y=0;
+  if(r<RC) y-=CD*(1-(r/RC)**2);
+  y+=0.18*Math.exp(-(((r-RC)/0.45)**2)); return y; };
+const cut=(x,z)=>x>=XC-1e-6 && z>=XC-1e-6;   // cut-away quarter (open section)
+// surface
+for(let x=-S;x<S-1e-6;x+=STEP) for(let z=-S;z<S-1e-6;z+=STEP){
+  if(cut(x,z)) continue;
+  const p=(X,Z)=>vtx([X,hgt(X,Z),Z]); const r=Math.hypot(x+STEP/2,z+STEP/2);
+  const base = r<RC-0.2 ? '#a65a33' : (Math.abs(r-RC)<0.45 ? '#c27047' : '#b5653c');
+  quad(p(x,z),p(x+STEP,z),p(x+STEP,z+STEP),p(x,z+STEP),vary(base,0.92+rnd()*0.16),'surface');
+}
+// soil walls (strata) — cut faces and outer faces
+const strata=y=> y>-0.35?'#9c5432': ['#8a4a2c','#7c4128','#915230','#6f3a24'][Math.floor((-y-0.35)/1.3)%4];
+function wall(fixed, axis, from, to){       // axis 'x' => plane x=fixed, runs along z; 'z' => plane z=fixed
+  for(let s=from;s<to-1e-6;s+=STEP){
+    const P=(u,y)=> axis==='x'?[fixed,y,u]:[u,y,fixed];
+    const h0=axis==='x'?hgt(fixed,s):hgt(s,fixed), h1=axis==='x'?hgt(fixed,s+STEP):hgt(s+STEP,fixed);
+    const rows=12;
+    for(let r=0;r<rows;r++){ const f0=r/rows,f1=(r+1)/rows;
+      const y00=h0+(BOT-h0)*f0, y01=h0+(BOT-h0)*f1, y10=h1+(BOT-h1)*f0, y11=h1+(BOT-h1)*f1;
+      quad(vtx(P(s,y00)),vtx(P(s+STEP,y10)),vtx(P(s+STEP,y11)),vtx(P(s,y01)),vary(strata((y00+y01)/2),0.95+rnd()*0.1),'soil'); }
+  } }
+wall(XC,'x',XC,S); wall(XC,'z',XC,S);            // section faces
+wall(-S,'x',-S,S); wall(-S,'z',-S,S); wall(S,'x',-S,XC); wall(S,'z',-S,XC);
+
+// Aftbody (stays at the surface, in the crater)
+const AB=-0.95, AT=AB+1.05;
+cyl([0,AB,0],[0,1,0],0.68,0.68,1.05,28,'#b9bfc7','aft',true,true,'#cfd4da');
+cyl([0,AT-0.25,0],[0,1,0],0.69,0.69,0.08,28,'#8d939b','aft',false,false);
+box([0.3,AT+0.04,-0.22],0.16,0.08,0.12,'#2a2c31','aft');                          // sun detector
+cyl([-0.3,AT,0.22],[0,1,0],0.035,0.035,0.05,8,'#6f757d','ant',false,true);
+cyl([-0.3,AT+0.05,0.22],[0,1,0],0.022,0.012,1.22,8,'#eceff2','ant',false,true);   // 127 mm whip antenna
+
+// Forebody (penetrator), ~0.6 m below the surface
+const FT=-5.4;
+cyl([0,FT,0],[0,-1,0],0.175,0.175,0.86,18,'#9aa1aa','fore',true,false);
+cyl([0,FT-0.86,0],[0,-1,0],0.175,0.03,0.2,18,'#878e97','fore',false,true);
+cyl([0.17,FT-0.4,0],[1,0,0],0.04,0.04,0.08,8,'#5d636b','fore',false,true);          // sample drill port
+
+// Tether: 1 m flexible cable, partly paid out (slack coils)
+{ const N=60, y0=AB, y1=FT; let prev=[0,y0,0];
+  for(let i=1;i<=N;i++){ const t=i/N, y=y0+(y1-y0)*t, a=t*Math.PI*7, rr=0.12*Math.sin(Math.PI*t);
+    const p=[rr*Math.cos(a), y, rr*Math.sin(a)]; beam(prev,p,0.035,'#d9a441','tether'); prev=p; } }
+
+// Aeroshell fragments scattered around the crater
+const frags=[[135,3.1],[150,3.6],[170,2.9],[195,3.4],[215,3.0],[240,3.7],[260,3.2],[285,2.9],[300,3.5],[325,3.1],[120,3.8],[340,3.9],[110,3.3],[350,2.95]];
+frags.forEach(([deg,r],i)=>{ const x=r*Math.cos(deg*Math.PI/180), z=r*Math.sin(deg*Math.PI/180); if(cut(x,z)) return;
+  const th=rnd()*Math.PI*2, tilt=(rnd()-0.5)*0.6;
+  const ex=[Math.cos(th),tilt,Math.sin(th)], ez=[-Math.sin(th),0,Math.cos(th)], ey=cross(ez,ex);
+  obox([x,hgt(x,z)+0.04,z],ex,ey,ez,0.15+rnd()*0.22,0.025,0.1+rnd()*0.14, i%3===2?'#d8cfc0':'#3d3b39','aero'); });
+
+// ---------- labels ----------
+const L = [
+ {p:['ant'],     a:[-0.3,AT+1.27,0.22], n:[0,1,0],  en:'Antenna',            uk:'Антена'},
+ {p:['aft'],     a:[0.5,AB+0.55,0.5],   n:[1,0,1],  en:'Aftbody',            uk:'Хвостова частина (aftbody)'},
+ {p:['aero'],    a:[3.1*Math.cos(2.36),hgt(3.1*Math.cos(2.36),3.1*Math.sin(2.36))+0.08,3.1*Math.sin(2.36)], n:[0,1,0], en:'Aeroshell fragments', uk:'Уламки аерооболонки'},
+ {p:['surface'], a:[-3.9,hgt(-3.9,2.9),2.9], n:[0,1,0], en:'Martian surface',  uk:'Поверхня Марса'},
+ {p:['surface'], a:[-1.75,hgt(-1.75,0.6),0.6], n:[0,1,0], en:'Impact crater',    uk:'Ударний кратер', k:'crater'},
+ {p:['tether'],  a:[0.12,-3.1,0.05],    n:[1,0,1],  en:'Tether (1 m cable)', uk:'Гнучкий кабель (1 м)'},
+ {p:['fore'],    a:[0.18,FT-0.5,0.08],  n:[1,0,1],  en:'Forebody · 0.3–1 m deep', uk:'Пенетратор (forebody) · 0,3–1 м'},
+];
+
+// ================= rendering =================
+const bg=document.getElementById('bg'), cv=document.getElementById('scene'), ctx=cv.getContext('2d');
+const tagsEl=document.getElementById('tags');
+document.getElementById('hint').textContent = LANG==='uk' ? 'Тягніть, щоб обертати · коліщатко або щипок — масштаб' : 'Drag to rotate · scroll or pinch to zoom';
+let W=0,H=0,DPR=1;
+const st={ yaw:-0.785, pitch:0.36, dist:17, auto:true, hover:null, pinned:null };
+const LIGHT=norm([-0.45,0.65,0.62]);
+const R=6.6, DIST0=17;
+
+L.forEach(l=>{ const t=document.createElement('div'); t.className='tag';
+  t.innerHTML=`<div class="dot"></div><div class="pill">${l[LANG]}</div>`;
+  for(const el of t.children){
+    el.addEventListener('mouseenter',()=>{st.hover=l;});
+    el.addEventListener('mouseleave',()=>{st.hover=null;});
+    el.addEventListener('click',()=>{st.pinned = st.pinned===l?null:l;});
+  }
+  tagsEl.appendChild(t); l.el=t; l.pill=t.children[1]; });
+
+function resize(){ DPR=Math.min(window.devicePixelRatio||1,2); W=innerWidth; H=innerHeight;
+  for(const c of [bg,cv]){ c.width=W*DPR; c.height=H*DPR; }
+  ctx.setTransform(DPR,0,0,DPR,0,0); drawStars(); L.forEach(l=>l.w=null); }
+function drawStars(){ const g=bg.getContext('2d'); g.setTransform(DPR,0,0,DPR,0,0);
+  const gr=g.createLinearGradient(0,0,0,H); gr.addColorStop(0,'#d9ab8e'); gr.addColorStop(0.55,'#c48f72'); gr.addColorStop(1,'#9b6a52');
+  g.fillStyle=gr; g.fillRect(0,0,W,H); }
+
+const PV=new Float32Array(V.length*3), PS=new Float32Array(V.length*2);
+const CY=-3.2;
+function view(p,out,k){ const cy=Math.cos(st.yaw), sy=Math.sin(st.yaw), cp=Math.cos(st.pitch), sp=Math.sin(st.pitch);
+  const x1=p[0]*cy+p[2]*sy, z1=-p[0]*sy+p[2]*cy, y1=p[1]-CY;
+  const y2=y1*cp-z1*sp, z2=y1*sp+z1*cp; out[k]=x1; out[k+1]=y2; out[k+2]=z2; }
+function rotN(n){ const cy=Math.cos(st.yaw), sy=Math.sin(st.yaw), cp=Math.cos(st.pitch), sp=Math.sin(st.pitch);
+  const x1=n[0]*cy+n[2]*sy, z1=-n[0]*sy+n[2]*cy, y1=n[1]; return [x1, y1*cp-z1*sp, y1*sp+z1*cp]; }
+
+const order=T.map((_,i)=>i), depth=new Float32Array(T.length);
+let drag=false;
+function frame(){
+  if(st.auto && !drag && !st.hover){ st.ph=(st.ph||0)+0.006; st.yaw += 0.0036*Math.cos(st.ph); } // gentle sway, keeps the cut-away facing you
+  const act = st.hover || st.pinned, hp = act ? act.p : null;
+  const F=Math.min(W*0.44,H*0.5)*DIST0/R, cx=W*0.5, cy=H*0.5;
+  for(let i=0;i<V.length;i++){ view(V[i],PV,i*3); const z=st.dist-PV[i*3+2];
+    PS[i*2]=cx+F*PV[i*3]/z; PS[i*2+1]=cy-F*PV[i*3+1]/z; }
+  for(let t=0;t<T.length;t++){ const [a,b,c]=T[t].i; depth[t]=PV[a*3+2]+PV[b*3+2]+PV[c*3+2]+T[t].b; }
+  order.sort((p,q)=>depth[p]-depth[q]);
+  ctx.clearRect(0,0,W,H); ctx.lineJoin='round';
+  for(const t of order){ const tr=T[t], [a,b,c]=tr.i;
+    const ax=PV[a*3],ay=PV[a*3+1],az=PV[a*3+2];
+    const ux=PV[b*3]-ax,uy=PV[b*3+1]-ay,uz=PV[b*3+2]-az, vx=PV[c*3]-ax,vy=PV[c*3+1]-ay,vz=PV[c*3+2]-az;
+    let nx=uy*vz-uz*vy, ny=uz*vx-ux*vz, nz=ux*vy-uy*vx; const nl=Math.hypot(nx,ny,nz)||1; nx/=nl;ny/=nl;nz/=nl;
+    const tx=-ax, ty=-ay, tz=st.dist-az; if(nx*tx+ny*ty+nz*tz<0){nx=-nx;ny=-ny;nz=-nz;}
+    const dif=Math.max(0,nx*LIGHT[0]+ny*LIGHT[1]+nz*LIGHT[2]);
+    const spec=Math.pow(Math.max(0,nz*0.6+ny*0.3+dif*0.4),18)*0.35;
+    let [r,g,bb]=tr.c; if(hp && hp.includes(tr.p)){ r=r*0.35+255*0.65; g=g*0.35+138*0.65; bb=bb*0.35+61*0.65; }
+    const k=0.34+0.78*dif;
+    const col=`rgb(${Math.min(255,r*k+255*spec)|0},${Math.min(255,g*k+255*spec)|0},${Math.min(255,bb*k+255*spec)|0})`;
+    ctx.fillStyle=col; ctx.strokeStyle=col; ctx.lineWidth=0.6;
+    ctx.beginPath(); ctx.moveTo(PS[a*2],PS[a*2+1]); ctx.lineTo(PS[b*2],PS[b*2+1]); ctx.lineTo(PS[c*2],PS[c*2+1]); ctx.closePath();
+    ctx.fill(); ctx.stroke(); }
+  layoutTags(F,cx,cy,act);
+  requestAnimationFrame(frame);
+}
+
+// pills sit right of their dot (left of it near the right edge); simple overlap avoidance
+function layoutTags(F,cx,cy,act){
+  const out=[0,0,0], placed=[];
+  for(const l of L){ view(l.a,out,0); const z=st.dist-out[2];
+    l.sx=cx+F*out[0]/z; l.sy=cy-F*out[1]/z; l.z=out[2];
+    l.vis = rotN(norm(l.n))[2] > -0.2;
+    if(l.w==null){ l.w=l.pill.offsetWidth; l.h=l.pill.offsetHeight; } }
+  const arr=[...L].sort((a,b)=>a.sy-b.sy);
+  for(const l of arr){
+    let px = l.sx+9; if(px+l.w > W-6) px = l.sx-9-l.w; px=Math.max(6,px);
+    let py = l.sy-l.h/2-4;
+    for(let guard=0;guard<12;guard++){ let hit=null;
+      for(const p of placed) if(px<p.x+p.w+4 && px+l.w+4>p.x && py<p.y+p.h+3 && py+l.h+3>p.y){ hit=p; break; }
+      if(!hit) break; py = hit.y+hit.h+3; }
+    py=Math.max(4,Math.min(H-l.h-30,py));
+    placed.push({x:px,y:py,w:l.w,h:l.h});
+    l.el.style.transform='translate(0,0)';
+    l.el.firstChild.style.left=l.sx+'px'; l.el.firstChild.style.top=l.sy+'px';
+    l.pill.style.left=px+'px'; l.pill.style.top=py+'px';
+    l.el.classList.toggle('on', act===l);
+    l.el.classList.toggle('dim', !l.vis && act!==l);
+    l.el.style.zIndex = act===l ? 50 : (l.vis?10:1);
+  }
+}
+
+// ================= interaction =================
+let lx=0, ly=0, pinch=null;
+cv.addEventListener('pointerdown',e=>{ drag=true; lx=e.clientX; ly=e.clientY; cv.classList.add('drag'); cv.setPointerCapture(e.pointerId); });
+cv.addEventListener('pointermove',e=>{ if(!drag||pinch) return; st.yaw+=(e.clientX-lx)*0.008; st.pitch=Math.max(-1.3,Math.min(1.45,st.pitch+(e.clientY-ly)*0.006)); lx=e.clientX; ly=e.clientY; });
+const end=()=>{ drag=false; cv.classList.remove('drag'); };
+cv.addEventListener('pointerup',end); cv.addEventListener('pointercancel',end);
+cv.addEventListener('dblclick',()=>{ st.auto=!st.auto; });
+cv.addEventListener('wheel',e=>{ e.preventDefault(); st.dist=Math.max(8,Math.min(40,st.dist*(1+Math.sign(e.deltaY)*0.08))); },{passive:false});
+cv.addEventListener('touchstart',e=>{ if(e.touches.length===2){ pinch=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY); }},{passive:true});
+cv.addEventListener('touchmove',e=>{ if(e.touches.length===2&&pinch){ const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+  st.dist=Math.max(8,Math.min(40,st.dist*pinch/d)); pinch=d; }},{passive:true});
+cv.addEventListener('touchend',e=>{ if(e.touches.length<2) pinch=null; },{passive:true});
+addEventListener('resize',resize);
+
+resize(); requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

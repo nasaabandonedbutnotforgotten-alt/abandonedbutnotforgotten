@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>
+/* Режим вбудовування: ?embed=mini (мітка на планеті) або ?embed=card (у картці сайту) */
+window.EMBED=new URLSearchParams(location.search).get('embed');
+if(window.EMBED)document.documentElement.classList.add('embed','embed-'+window.EMBED);
+</script>
+<style>
+.embed .panel{display:none}
+.embed .wrap{min-height:0}
+.embed .stage{height:100vh;min-height:0}
+html.embed-mini,.embed-mini body{background:transparent!important;overflow:hidden}
+.embed-mini .stage{background:transparent!important;cursor:default}
+.embed-mini .scene{left:50%!important;top:60%!important}
+.embed-mini .overlay,.embed-mini .hint,.embed-mini .shadow,.embed-mini .status{display:none!important}
+.embed-card .hint{font-size:11px;left:8px;bottom:8px}
+.embed-card .label span{font-size:11px;padding:3px 6px}
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo 11 Laser Reflector — 3D model</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#0B1026;color:#E6EAF5;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{display:flex;flex-wrap:wrap;min-height:100%}
+.stage{flex:999 1 560px;min-width:0;position:relative;height:100vh;min-height:520px;overflow:hidden;cursor:grab;touch-action:none;
+ background:
+  radial-gradient(ellipse 60% 18% at 45% 72%,rgba(40,38,36,.55),rgba(0,0,0,0) 70%),
+  radial-gradient(2px 1.5px at 12% 64%,#4d4b47 50%,transparent 51%),radial-gradient(3px 2px at 70% 80%,#4a4844 50%,transparent 51%),
+  radial-gradient(2px 1.5px at 30% 88%,#55534f 50%,transparent 51%),radial-gradient(4px 2.5px at 85% 60%,#4f4d49 50%,transparent 51%),
+  linear-gradient(180deg,#020306 0%,#020306 30%,#3f3d3a 34%,#6b6965 55%,#85827d 100%)}
+.stage:active{cursor:grabbing}
+.viewport{position:absolute;inset:0;perspective:1700px;perspective-origin:50% 40%}
+.scene{position:absolute;left:55%;top:60%;width:0;height:0;transform-style:preserve-3d}
+.obj{position:absolute;left:0;top:0;transform-style:preserve-3d}
+.f{position:absolute;left:0;top:0;backface-visibility:hidden;outline:1px solid rgba(0,0,0,.12)}
+.anchor{position:absolute;left:0;top:0;width:1px;height:1px}
+.overlay{position:absolute;inset:0;pointer-events:none}
+.label{position:absolute;left:0;top:0;pointer-events:none}
+.label span{position:absolute;left:8px;top:-12px;white-space:nowrap;font-size:13px;font-weight:600;background:rgba(11,16,38,.88);border:1px solid #2A3A6E;color:#fff;padding:4px 8px;border-radius:8px}
+.label i{position:absolute;left:-5px;top:-5px;width:10px;height:10px;border-radius:50%;background:#FF8A50;box-shadow:0 0 0 3px rgba(255,138,80,.3)}
+.hide-labels .label{display:none}
+.hl .f{filter:brightness(1.25) drop-shadow(0 0 0 #FF8A50)}
+.hl .f{outline:2px solid #FF8A50}
+.panel{flex:1 1 300px;padding:28px 24px;border-left:1px solid #1E2A52;background:#0E1532;overflow:auto;max-height:100vh}
+h1{margin:0 0 6px;font-size:22px;line-height:1.25}
+.sub{margin:0 0 20px;color:#B8C2DC;font-size:14px;line-height:1.5}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+button{font:inherit;font-size:14px;font-weight:600;color:#fff;background:#1B2550;border:1px solid #2A3A6E;border-radius:10px;padding:10px 14px;min-height:44px;cursor:pointer}
+button:hover{background:#24306a}
+button[aria-pressed="true"]{background:#FF8A50;border-color:#FF8A50;color:#1a0e06}
+ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+ol li button{width:100%;text-align:left;display:flex;flex-direction:column;gap:2px;background:#10183A;font-weight:500}
+ol li b{font-size:15px;color:#fff}
+ol li small{color:#A8B2CC;font-size:12px;line-height:1.4}
+.hint{position:absolute;left:16px;bottom:14px;font-size:13px;color:#E6EAF5;background:rgba(11,16,38,.75);padding:6px 10px;border-radius:8px;pointer-events:none}
+.note{margin-top:20px;font-size:12px;line-height:1.5;color:#A8B2CC}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="stage" id="stage" aria-label="3D model of the laser reflector on the Moon. Drag to rotate">
+  <div class="viewport"><div class="scene" id="scene"></div></div>
+  <div class="overlay" id="overlay"></div>
+  <div class="hint">Drag to rotate · scroll or pinch to zoom</div>
+ </div>
+ <aside class="panel">
+  <h1>Apollo 11 Laser Reflector</h1>
+  <p class="sub">3D model of the instrument as it was left on the Moon on July 21, 1969 (based on NASA photos). Hover over a part in the list to highlight it.</p>
+  <div class="btns">
+   <button id="bLabels" aria-pressed="true">Labels</button>
+   <button id="bSpin" aria-pressed="false">Auto-rotate</button>
+   <button id="bPhoto">View as in the photo</button>
+  </div>
+  <ol id="legend"></ol>
+  <p class="note">A schematic educational model: the shape and proportions follow NASA photos and drawings approximately, without exact dimensions.</p>
+ </aside>
+</div>
+<script>
+(function(){
+const scene=document.getElementById('scene');
+const groups={};
+const PARTS=[
+ ['array','Corner-cube reflector array','100 quartz prisms in a white housing, tilted toward Earth'],
+ ['tilt','Tilt support','Holds the array at the right angle'],
+ ['pallet','Pallet','The white base that stands on the ground (pallet assembly)'],
+ ['handle','Carry handle','The arch the astronaut used to carry the instrument'],
+ ['boom','Boom','Gold-colored boom for carrying and deploying'],
+ ['sun','Sun compass','Its shadow was used to point the instrument at Earth'],
+ ['align','Alignment handle','Alignment handle assy']
+];
+function shade(hex,k){const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;r=Math.min(255,r*k|0);g=Math.min(255,g*k|0);b=Math.min(255,b*k|0);return `rgb(${r},${g},${b})`}
+function grp(id,parent){if(!groups[id]){const g=document.createElement('div');g.className='obj';g.dataset.part=id;(parent||scene).appendChild(g);groups[id]=g}return groups[id]}
+// box in a container; x,y,z = min corner (y up)
+// sun from the right-front: right faces bright, left faces dark
+function box(parent,x,y,z,w,h,d,color,topBg){
+ const o=document.createElement('div');o.className='obj';
+ o.style.transform=`translate3d(${x+w/2}px,${-(y+h/2)}px,${z+d/2}px)`;
+ const faces=[
+  [w,h,`translateZ(${d/2}px)`,0.82],[w,h,`rotateY(180deg) translateZ(${d/2}px)`,0.5],
+  [d,h,`rotateY(90deg) translateZ(${w/2}px)`,0.98],[d,h,`rotateY(-90deg) translateZ(${w/2}px)`,0.45],
+  [w,d,`rotateX(90deg) translateZ(${h/2}px)`,1.05],[w,d,`rotateX(-90deg) translateZ(${h/2}px)`,0.3]];
+ faces.forEach((f,i)=>{const e=document.createElement('div');e.className='f';e.style.width=f[0]+'px';e.style.height=f[1]+'px';
+  e.style.marginLeft=(-f[0]/2)+'px';e.style.marginTop=(-f[1]/2)+'px';e.style.transform=f[2];e.style.background=shade(color,f[3]);
+  if(i===4&&topBg)e.style.background=topBg;
+  o.appendChild(e)});
+ parent.appendChild(o);return o;
+}
+const WH='#e9ebef',SL='#c9ced8',GD='#d6a63c';
+// ----- Pallet: white tray with raised rim
+const P=grp('pallet');
+box(P,-210,0,-150,420,22,300,WH);
+box(P,-210,22,-150,420,14,14,WH);box(P,-210,22,136,420,14,14,WH);
+box(P,-210,22,-136,14,14,272,WH);box(P,196,22,-136,14,14,272,WH);
+box(P,-230,0,110,30,18,30,SL);box(P,200,0,110,30,18,30,SL);box(P,-230,0,-140,30,18,30,SL);box(P,200,0,-140,30,18,30,SL);
+// ----- Tilt support: central pedestal + side brackets
+const T=grp('tilt');
+box(T,-60,22,-50,120,40,100,WH);
+box(T,-150,22,-20,24,90,40,WH);box(T,126,22,-20,24,90,40,WH);
+box(T,-40,62,-30,80,30,60,SL);
+// ----- Array: tilted toward Earth (low in the sky, to the left-front)
+const tiltWrap=document.createElement('div');tiltWrap.className='obj';
+tiltWrap.style.transform='translate3d(0px,-130px,0px) rotateZ(22deg) rotateX(-8deg)';
+scene.appendChild(tiltWrap);
+const A=grp('array',tiltWrap);
+const prisms=`repeating-linear-gradient(0deg,#c9ccd4 0 2px,transparent 2px 30px),repeating-linear-gradient(90deg,#c9ccd4 0 2px,transparent 2px 30px),
+ radial-gradient(circle at 50% 50%,#3a4560 0 25%,#141925 55%) 0 0/30px 30px,#141925`;
+box(A,-150,-24,-150,300,48,300,WH,prisms);
+// array side frame lip
+box(A,-156,-24,-156,312,8,6,WH);box(A,-156,-24,150,312,8,6,WH);
+// ----- Carry handle: arch on the right side
+const H=grp('handle');
+box(H,222,22,-120,12,250,12,SL);box(H,222,22,96,12,250,12,SL);box(H,222,260,-120,12,12,228,SL);
+box(H,206,22,-126,32,16,24,WH);box(H,206,22,90,32,16,24,WH);
+// ----- Gold boom: long rod from the front-left corner, slightly raised
+const B=grp('boom');
+const bw=document.createElement('div');bw.className='obj';bw.style.transform='translate3d(-200px,-40px,120px) rotateY(-18deg) rotateZ(10deg)';B.appendChild(bw);
+box(bw,-330,-5,-5,330,10,10,GD);box(bw,-350,-9,-9,26,18,18,'#b0842a');box(bw,-30,-10,-10,40,20,20,'#b0842a');
+// ----- Sun compass: small plate with gnomon, front-right
+const S=grp('sun');
+box(S,120,36,70,60,4,40,'#f4f1e6');box(S,148,40,88,3,26,3,'#2a2e38');
+// ----- Alignment handle: thin white bars at the front
+const L=grp('align');
+box(L,20,8,152,190,10,10,WH);box(L,20,8,152,10,30,10,WH);box(L,200,8,152,10,30,10,WH);box(L,60,30,150,110,6,14,SL);
+// ----- Labels (anchors in 3D, labels in 2D overlay)
+const LP={array:[-60,190,-40],tilt:[130,90,0],pallet:[-120,30,150],handle:[228,270,-10],boom:[-250,12,0],sun:[150,62,90],align:[110,20,160]};
+const ov=document.getElementById('overlay');const labels=[];
+PARTS.forEach(([id,name])=>{const a=document.createElement('div');a.className='anchor';const p=LP[id];a.style.transform=`translate3d(${p[0]}px,${-p[1]}px,${p[2]}px)`;(id==='boom'?bw:scene).appendChild(a);
+ const l=document.createElement('div');l.className='label';l.innerHTML=`<i></i><span>${name}</span>`;ov.appendChild(l);labels.push([l,a])});
+const lg=document.getElementById('legend');
+PARTS.forEach(([id,name,en])=>{const li=document.createElement('li');const b=document.createElement('button');b.innerHTML=`<b>${name}</b><small>${en}</small>`;
+ const on=()=>groups[id].classList.add('hl'),off=()=>groups[id].classList.remove('hl');
+ b.addEventListener('mouseenter',on);b.addEventListener('mouseleave',off);b.addEventListener('focus',on);b.addEventListener('blur',off);
+ li.appendChild(b);lg.appendChild(li)});
+// ----- View
+const PHOTO={rx:-30,ry:28};
+let rx=PHOTO.rx,ry=PHOTO.ry,zoom=1,spin=window.EMBED==='mini';
+const ovEl=ov;
+function render(){
+ scene.style.transform=`scale(${zoom}) rotateX(${rx}deg) rotateY(${ry}deg)`;
+ const sr=ovEl.getBoundingClientRect();
+ labels.forEach(([l,a])=>{const r=a.getBoundingClientRect();l.style.transform=`translate(${r.left-sr.left}px,${r.top-sr.top}px)`});
+}
+const st=document.getElementById('stage');
+function fit(){const k=Math.min(st.clientWidth/1250,st.clientHeight/800);zoom=window.EMBED?k*0.95:Math.max(.4,Math.min(1.15,k))}
+fit();render();window.addEventListener('resize',()=>{fit();render()});
+let drag=null;const pts=new Map();
+st.addEventListener('pointerdown',e=>{st.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);drag={x:e.clientX,y:e.clientY,rx,ry}});
+st.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,[e.clientX,e.clientY]);
+ if(pts.size===2){const [a,b]=[...pts.values()];const d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(drag.pd)zoom=Math.max(.35,Math.min(2.5,zoom*d/drag.pd));drag.pd=d;render();return}
+ ry=drag.ry+(e.clientX-drag.x)*0.4;rx=Math.max(-80,Math.min(5,drag.rx-(e.clientY-drag.y)*0.3));render()});
+const up=e=>{pts.delete(e.pointerId);if(pts.size===0)drag=null;else{const [a]=[...pts.values()];drag={x:a[0],y:a[1],rx,ry}}};
+st.addEventListener('pointerup',up);st.addEventListener('pointercancel',up);
+st.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.35,Math.min(2.5,zoom*(e.deltaY<0?1.08:0.93)));render()},{passive:false});
+function tick(){if(spin&&!drag){ry+=0.15;render()}requestAnimationFrame(tick)}tick();
+const tg=(b,v)=>b.setAttribute('aria-pressed',String(v));
+const bl=document.getElementById('bLabels');bl.onclick=()=>{const v=bl.getAttribute('aria-pressed')!=='true';tg(bl,v);st.classList.toggle('hide-labels',!v)};
+const bs=document.getElementById('bSpin');bs.onclick=()=>{spin=!spin;tg(bs,spin)};
+document.getElementById('bPhoto').onclick=()=>{rx=PHOTO.rx;ry=PHOTO.ry;spin=false;tg(bs,false);fit();render()};
+// на планеті: кут огляду задає сайт
+if(window.EMBED==='mini'){spin=false;window.addEventListener('message',e=>{const d=e.data||{};if(d.type==='pose'){rx=d.rx;if(d.ry!==undefined)ry=d.ry;render()}})}
+})();
+</script>
+<script src="models-uk.js"></script>
+</body>
+</html>

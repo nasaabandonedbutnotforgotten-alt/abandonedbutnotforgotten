@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Moon — Abandoned but Not Forgotten</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Спільні стилі сайту + стилі сторінки планети -->
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="planet.css">
+</head>
+<body>
+
+  <canvas id="stars"></canvas>
+
+  <!-- ===== ВЕРХНЯ ПАНЕЛЬ ===== -->
+  <header class="topbar">
+    <a class="logo" href="index.html">Abandoned <em>but not</em> Forgotten</a>
+    <nav class="menu">
+      <a class="tab" href="index.html">Home</a>
+      <a class="tab active" href="moon.html">Moon</a>
+      <a class="tab" href="mars.html">Mars</a>
+      <a class="tab" href="quiz.html">Quiz</a>
+      <a class="tab" href="about.html">About us</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ===== 3D МАРС + КАРТКА ===== -->
+    <section class="explorer">
+      <div class="globe-col">
+        <div class="globe-box" id="globeBox">
+          <canvas id="globe"></canvas>
+          <div class="tooltip" id="tooltip"></div>
+        </div>
+        <p class="globe-hint">🖱 Drag to spin · scroll or pinch to zoom · click a spacecraft</p>
+
+      </div>
+
+      <!-- Картка з фото (заповнюється з mars.js) -->
+      <aside class="card" id="card">
+        <span class="label">THE MOON</span>
+        <h1>Our Closest Neighbor</h1>
+        <p class="card-intro">The Moon is the only other world where humans have walked. Astronauts and robots left machines behind — some are still useful today, others have been silent for decades.</p>
+        <p class="card-intro">Spin the Moon, zoom in and click a spacecraft — on the surface or in orbit — to read its story.</p>
+        <div class="legend">
+          <span><i class="dot active"></i> Still in use</span>
+          <span><i class="dot silent"></i> Silent</span>
+          <span>🛰 In orbit</span>
+          <span><i class="impact-ico"></i> Crash site</span>
+        </div>
+      </aside>
+
+      <!-- Список усіх апаратів (праворуч) -->
+      <aside class="side-list">
+        <span class="side-title">Spacecraft</span>
+        <div class="chips" id="chips"></div>
+      </aside>
+    </section>
+
+    <!-- ===== ПОВНИЙ ОПИС (з'являється після вибору апарата) ===== -->
+    <section class="details" id="details" hidden></section>
+  </main>
+
+  <footer class="footer">
+    <div class="logo">Abandoned <em>but not</em> Forgotten</div>
+    <p>Data and photos: NASA · NASA NSSDC · NASA JPL · LROC (NASA/GSFC/ASU)</p>
+    <p>Moon map: NASA CGI Moon Kit (LROC, NASA/GSFC/ASU). Landing sites use real coordinates.</p>
+  </footer>
+
+  <!-- Дані, карта поверхні і логіка -->
+  <script src="i18n.js"></script>
+  <script src="moon-data.js"></script>
+  <script src="moon-extra.js"></script>
+  <script src="moon-flybys.js"></script>
+  <script src="moon-doc.js"></script>
+  <script src="moon-lo.js"></script>
+  <script src="moon-ranger.js"></script>
+  <script src="moon-texture.js"></script>
+  <script src="extras.js"></script>
+  <script src="card-meta.js"></script>
+  <script src="data-uk.js"></script>
+  <script src="planet.js"></script>
+  <script>
+    initPlanet({
+      sites: MOON_SITES,
+      orbiters: MOON_ORBITERS,          // апарати на орбіті
+      flybys: MOON_FLYBYS,              // ранні зонди Pioneer (не долетіли / пролетіли повз)
+      textureData: MOON_TEXTURE_DATA,
+      realTexture: "moon.jpg",           // чітка карта NASA 8K (LROC); працює через Live Server
+      tiles: { dir: "moon-tiles", cols: 16, rows: 8, size: 1024 },   // плитки 16K — вантажаться лише для видимої ділянки
+      atmosphere: "rgba(220,225,255,",   // легке сяйво (атмосфери в Місяця немає)
+      modelTint: "grayscale(.35)",          // відтінок моделей під колір поверхні
+      detail: 0.4,                     // сила дрібних деталей при наближенні
+      planetName: "Moon"
+    });
+  </script>
+  <script src="transitions.js"></script>
+</body>
+</html>

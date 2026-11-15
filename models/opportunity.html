@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>
+/* Режим вбудовування: ?embed=mini (мітка на планеті) або ?embed=card (у картці сайту) */
+window.EMBED=new URLSearchParams(location.search).get('embed');
+if(window.EMBED)document.documentElement.classList.add('embed','embed-'+window.EMBED);
+</script>
+<style>
+.embed .panel{display:none}
+.embed .wrap{min-height:0}
+.embed .stage{height:100vh;min-height:0}
+html.embed-mini,.embed-mini body{background:transparent!important;overflow:hidden}
+.embed-mini .stage{background:transparent!important;cursor:default}
+.embed-mini .scene{left:50%!important;top:60%!important}
+.embed-mini .overlay,.embed-mini .hint,.embed-mini .shadow,.embed-mini .status{display:none!important}
+.embed-card .hint{font-size:11px;left:8px;bottom:8px}
+.embed-card .label span{font-size:11px;padding:3px 6px}
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Opportunity Rover — 3D model</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#0B1026;color:#E6EAF5;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{display:flex;flex-wrap:wrap;min-height:100%}
+.stage{flex:999 1 560px;min-width:0;position:relative;height:100vh;min-height:520px;overflow:hidden;cursor:grab;touch-action:none;
+ background:
+  radial-gradient(ellipse 50% 13% at 50% 78%,rgba(60,30,18,.5),rgba(0,0,0,0) 70%),
+  radial-gradient(3px 2px at 12% 66%,#6e3e27 50%,transparent 51%),radial-gradient(4px 2.5px at 72% 84%,#6a3a24 50%,transparent 51%),
+  radial-gradient(2px 1.5px at 28% 90%,#7a4630 50%,transparent 51%),radial-gradient(5px 3px at 88% 62%,#6f3f29 50%,transparent 51%),
+  linear-gradient(180deg,#c9a184 0%,#b88a6c 26%,#9a6448 32%,#a8704f 55%,#b98060 100%)}
+.stage.storm{background:
+  radial-gradient(ellipse 50% 13% at 50% 78%,rgba(40,30,25,.35),rgba(0,0,0,0) 70%),
+  linear-gradient(180deg,#3c3530 0%,#4d443d 30%,#5e544b 40%,#6c6158 100%)}
+.stage:active{cursor:grabbing}
+.viewport{position:absolute;inset:0;perspective:1600px;perspective-origin:50% 40%}
+.scene{position:absolute;left:50%;top:64%;width:0;height:0;transform-style:preserve-3d}
+.obj{position:absolute;left:0;top:0;transform-style:preserve-3d}
+.f{position:absolute;left:0;top:0;backface-visibility:hidden;outline:1px solid rgba(0,0,0,.14)}
+.f2{position:absolute;left:0;top:0}
+.storm .scene .f,.storm .scene .f2{filter:sepia(.75) saturate(.9) brightness(.82)}
+.anchor{position:absolute;left:0;top:0;width:1px;height:1px}
+.overlay{position:absolute;inset:0;pointer-events:none}
+.label{position:absolute;left:0;top:0;pointer-events:none}
+.label span{position:absolute;left:8px;top:-12px;white-space:nowrap;font-size:13px;font-weight:600;background:rgba(11,16,38,.88);border:1px solid #2A3A6E;color:#fff;padding:4px 8px;border-radius:8px}
+.label i{position:absolute;left:-5px;top:-5px;width:10px;height:10px;border-radius:50%;background:#FF8A50;box-shadow:0 0 0 3px rgba(255,138,80,.3)}
+.hide-labels .label{display:none}
+.scene .hl .f,.scene .hl .f2{outline:2px solid #FF8A50;filter:brightness(1.3)!important}
+.panel{flex:1 1 300px;padding:28px 24px;border-left:1px solid #1E2A52;background:#0E1532;overflow:auto;max-height:100vh}
+h1{margin:0 0 6px;font-size:22px;line-height:1.25}
+.sub{margin:0 0 20px;color:#B8C2DC;font-size:14px;line-height:1.5}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+button{font:inherit;font-size:14px;font-weight:600;color:#fff;background:#1B2550;border:1px solid #2A3A6E;border-radius:10px;padding:10px 14px;min-height:44px;cursor:pointer}
+button:hover{background:#24306a}
+button[aria-pressed="true"]{background:#FF8A50;border-color:#FF8A50;color:#1a0e06}
+ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+ol li button{width:100%;text-align:left;display:flex;flex-direction:column;gap:2px;background:#10183A;font-weight:500}
+ol li b{font-size:15px;color:#fff}
+ol li small{color:#A8B2CC;font-size:12px;line-height:1.4}
+.hint{position:absolute;left:16px;bottom:14px;font-size:13px;color:#E6EAF5;background:rgba(11,16,38,.75);padding:6px 10px;border-radius:8px;pointer-events:none}
+.note{margin-top:20px;font-size:12px;line-height:1.5;color:#A8B2CC}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="stage" id="stage" aria-label="3D model of the Opportunity rover. Drag to rotate">
+  <div class="viewport"><div class="scene" id="scene"></div></div>
+  <div class="overlay" id="overlay"></div>
+  <div class="hint">Drag to rotate · scroll or pinch to zoom</div>
+ </div>
+ <aside class="panel">
+  <h1>Opportunity Rover</h1>
+  <p class="sub">Mars Exploration Rover (MER-B), NASA/JPL, 2004–2018 — 3D model based on the structure diagram. Hover over a part in the list to highlight it.</p>
+  <div class="btns">
+   <button id="bStorm" aria-pressed="false">As on Mars in 2018 (dust storm)</button>
+   <button id="bLabels" aria-pressed="true">Labels</button>
+   <button id="bSpin" aria-pressed="false">Auto-rotate</button>
+   <button id="bView">View as in the diagram</button>
+  </div>
+  <ol id="legend"></ol>
+  <p class="note">In June 2018 a planet-wide dust storm blocked the Sun, and the dust-covered rover never called home again. The model is schematic; proportions are approximate.</p>
+ </aside>
+</div>
+<script>
+(function(){
+const scene=document.getElementById('scene');
+const groups={};const bbs=[];
+const PARTS=[
+ ['navcam','Navigation stereo camera','Navcam — helped plan the route'],
+ ['pancam','Panoramic stereo camera','Pancam — high-resolution color panoramas'],
+ ['minites','Mini-TES spectrometer','Infrared spectrometer inside the mast'],
+ ['uhf','UHF antenna','Communication through orbiters'],
+ ['lga','LGA antenna','Low-gain antenna'],
+ ['hga','HGA antenna','High-gain antenna — direct link to Earth'],
+ ['sundial','“Sundial”','Calibration target for the cameras'],
+ ['solar','Solar arrays','The main power source'],
+ ['magnet','Front magnet','Collected magnetic dust'],
+ ['micro','Microscope','Microscopic Imager — close-up pictures'],
+ ['rat','RAT','Rock Abrasion Tool — ground down rock surfaces'],
+ ['moss','Mössbauer spectrometer','Identified iron-bearing minerals'],
+ ['apxs','Alpha particle X-ray spectrometer','APXS — chemical makeup of rocks'],
+ ['susp','Rocker-bogie suspension','Let it climb over rocks bigger than its wheels'],
+ ['wheels','Wheels','Six wheels, each with its own motor'],
+ ['body','Electronics body','Warm Electronics Box — the heated compartment']
+];
+function shade(hex,k){const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;r=Math.min(255,r*k|0);g=Math.min(255,g*k|0);b=Math.min(255,b*k|0);return `rgb(${r},${g},${b})`}
+function grp(id){if(!groups[id]){const g=document.createElement('div');g.className='obj';g.dataset.part=id;scene.appendChild(g);groups[id]=g}return groups[id]}
+function wrap(parent,t){const o=document.createElement('div');o.className='obj';o.style.transform=t;parent.appendChild(o);return o}
+function box(parent,x,y,z,w,h,d,color,bg){
+ bg=bg||{};const o=document.createElement('div');o.className='obj';
+ o.style.transform=`translate3d(${x+w/2}px,${-(y+h/2)}px,${z+d/2}px)`;
+ const faces=[[w,h,`translateZ(${d/2}px)`,0.85],[w,h,`rotateY(180deg) translateZ(${d/2}px)`,0.55],
+  [d,h,`rotateY(90deg) translateZ(${w/2}px)`,0.98],[d,h,`rotateY(-90deg) translateZ(${w/2}px)`,0.5],
+  [w,d,`rotateX(90deg) translateZ(${h/2}px)`,1.05],[w,d,`rotateX(-90deg) translateZ(${h/2}px)`,0.32]];
+ faces.forEach((f,i)=>{const e=document.createElement('div');e.className='f';e.style.width=f[0]+'px';e.style.height=f[1]+'px';
+  e.style.marginLeft=(-f[0]/2)+'px';e.style.marginTop=(-f[1]/2)+'px';e.style.transform=f[2];e.style.background=bg[i]||shade(color,f[3]);o.appendChild(e)});
+ parent.appendChild(o);return o;
+}
+function rod(parent,p,q,t,color){
+ const dx=q[0]-p[0],dy=-(q[1]-p[1]),dz=q[2]-p[2];const L=Math.hypot(dx,dy,dz);
+ const b=Math.asin(dy/L)*180/Math.PI,a=Math.atan2(-dz,dx)*180/Math.PI;
+ const o=wrap(parent,`translate3d(${(p[0]+q[0])/2}px,${-(p[1]+q[1])/2}px,${(p[2]+q[2])/2}px) rotateY(${a}deg) rotateZ(${b}deg)`);
+ box(o,-L/2,-t/2,-t/2,L,t,t,color);return o;
+}
+// cylinder with axis: 'y' (vertical) or 'z' (sideways, like a wheel) or 'x' (forward, like a lens)
+function cyl(parent,x,y,z,r,h,color,axis,N,cap){
+ N=N||14;const pre=axis==='z'?'rotateX(90deg)':axis==='x'?'rotateZ(90deg)':'';
+ const o=wrap(parent,`translate3d(${x}px,${-y}px,${z}px) ${pre}`);const chord=2*r*Math.sin(Math.PI/N)+1;
+ for(let i=0;i<N;i++){const a=360/N*i;const e=document.createElement('div');e.className='f2';
+  e.style.cssText+=`width:${chord}px;height:${h}px;margin-left:${-chord/2}px;margin-top:${-h/2}px;background:${shade(color,0.55+0.5*Math.max(0,Math.cos((a-40)*Math.PI/180)))};transform:rotateY(${a}deg) translateZ(${r}px)`;o.appendChild(e)}
+ [h/2,-h/2].forEach((yy,k)=>{const d=document.createElement('div');d.className='f2';d.style.cssText+=`width:${2*r}px;height:${2*r}px;margin-left:${-r}px;margin-top:${-r}px;border-radius:50%;background:${cap||shade(color,k?1.0:0.4)};transform:translateY(${-yy}px) rotateX(90deg)`;o.appendChild(d)});
+ return o;
+}
+const AL='#c3c6cc',DK='#4f5462',GD='#c9a24b',WH='#e6e7ea';
+const CELLS='repeating-linear-gradient(0deg,#5b6585 0 1px,transparent 1px 12px),repeating-linear-gradient(90deg,#5b6585 0 1px,transparent 1px 12px),linear-gradient(135deg,#283458,#1a2240)';
+// ----- Body (WEB)
+const B=grp('body');box(B,-75,62,-50,150,48,100,GD);box(B,-75,58,-50,150,4,100,DK);
+// ----- Solar arrays: deck + 4 wings
+const S=grp('solar');
+box(S,-90,110,-62,190,5,124,'#2a3350',{4:CELLS});
+box(S,-60,112,-150,150,4,88,'#2a3350',{4:CELLS});box(S,-60,112,62,150,4,88,'#2a3350',{4:CELLS});
+box(S,-175,112,-55,85,4,110,'#2a3350',{4:CELLS});
+box(S,100,112,-45,30,4,90,'#2a3350',{4:CELLS});
+// ----- Mast with Mini-TES elbow and camera head
+const MT=grp('minites');cyl(MT,70,180,-40,9,130,'#d4d6db','y',12);box(MT,58,240,-52,24,22,24,'#b9bcc3');cyl(MT,82,252,-40,8,18,'#9ea2aa','x',10,'#222');
+const PC=grp('pancam');box(PC,60,262,-75,26,18,70,'#d8dade');cyl(PC,90,272,-68,5,10,'#2a2d35','x',10,'#0b0d12');cyl(PC,90,272,-12,5,10,'#2a2d35','x',10,'#0b0d12');
+const NC=grp('navcam');cyl(NC,90,272,-52,4,8,'#3a3d45','x',8,'#0b0d12');cyl(NC,90,272,-28,4,8,'#3a3d45','x',8,'#0b0d12');
+// ----- Antennas
+const HG=grp('hga');cyl(HG,-50,128,45,6,26,AL,'y',10);
+const dish=wrap(HG,'translate3d(-50px,-150px,45px) rotateY(-30deg) rotateX(-20deg)');
+['translateZ(0px)','rotateY(180deg)'].forEach(t=>{const d=document.createElement('div');d.className='f';d.style.cssText+=`width:48px;height:48px;margin-left:-24px;margin-top:-24px;border-radius:50%;transform:${t};background:radial-gradient(circle,#f0f0ee 0 18%,#d8d9d6 40%,#a9aaa7 100%);border:2px solid #8c8d8a`;dish.appendChild(d)});
+const LG=grp('lga');cyl(LG,-15,165,20,3,100,'#d9dbe0','y',8);cyl(LG,-15,215,20,5,14,'#eaeaea','y',8);
+const UH=grp('uhf');cyl(UH,20,135,-8,2.5,40,'#d9dbe0','y',8);
+const SD=grp('sundial');box(SD,-80,115,30,18,4,18,'#eeeeee');cyl(SD,-71,125,39,1.5,16,'#333','y',6);
+// ----- Magnet
+const MG=grp('magnet');box(MG,96,100,-20,6,12,40,'#7d6a52');
+// ----- Rocker-bogie suspension + 6 wheels
+const SU=grp('susp'),W=grp('wheels');
+[-78,78].forEach(z=>{const zz=z;
+ const piv=[0,86,zz],fw=[90,22,zz],bp=[-40,52,zz],mw=[0,22,zz],rw=[-90,22,zz];
+ rod(SU,piv,[90,52,zz],6,AL);rod(SU,[90,52,zz],fw,6,AL);rod(SU,piv,bp,6,AL);rod(SU,bp,[-5,40,zz],5,AL);rod(SU,[-5,40,zz],mw,5,AL);rod(SU,bp,[-85,40,zz],5,AL);rod(SU,[-85,40,zz],rw,5,AL);
+ rod(SU,[0,86,zz>0?50:-50],piv,5,DK);
+ [fw,mw,rw].forEach(p=>cyl(W,p[0],p[1],zz+(zz>0?10:-10),22,18,'#b7b9bd','z',16,'radial-gradient(circle,#555 0 20%,#c8c9cc 22% 70%,#8a8b8e 72%)'));
+});
+// ----- Instrument arm (IDD) stowed under the front with the turret
+const ARM=grp('susp');
+rod(ARM,[80,70,-30],[130,60,-30],6,AL);rod(ARM,[130,60,-30],[150,40,-10],6,AL);
+const T=[150,36,-6];
+const MI=grp('micro');cyl(MI,T[0]+16,T[1],T[2]-14,6,18,'#ccced3','x',10,'#111');
+const RA=grp('rat');cyl(RA,T[0]+6,T[1]-14,T[2],8,14,'#9b9fa8','y',10);
+const MO=grp('moss');box(MO,T[0]-6,T[1]+4,T[2]+8,16,14,16,'#b8bcc4');
+const AP=grp('apxs');cyl(AP,T[0]-4,T[1]-2,T[2]-16,6,14,'#d5d7dc','z',10);
+// ----- Labels
+const LP={navcam:[95,295,-40],pancam:[95,285,-80],minites:[60,235,-55],uhf:[20,160,-8],lga:[-15,225,20],hga:[-50,180,50],sundial:[-75,140,40],solar:[-30,118,130],
+ magnet:[102,108,-5],micro:[175,40,-20],rat:[156,15,-6],moss:[150,60,10],apxs:[150,25,-35],susp:[-40,60,90],wheels:[90,20,100],body:[-60,80,52]};
+const ov=document.getElementById('overlay');const labels=[];
+PARTS.forEach(([id,name])=>{const a=document.createElement('div');a.className='anchor';const p=LP[id];a.style.transform=`translate3d(${p[0]}px,${-p[1]}px,${p[2]}px)`;scene.appendChild(a);
+ const l=document.createElement('div');l.className='label';l.innerHTML=`<i></i><span>${name}</span>`;ov.appendChild(l);labels.push([l,a])});
+const lg=document.getElementById('legend');
+PARTS.forEach(([id,name,en])=>{const li=document.createElement('li');const b=document.createElement('button');b.innerHTML=`<b>${name}</b><small>${en}</small>`;
+ const on=()=>groups[id].classList.add('hl'),off=()=>groups[id].classList.remove('hl');
+ b.addEventListener('mouseenter',on);b.addEventListener('mouseleave',off);b.addEventListener('focus',on);b.addEventListener('blur',off);li.appendChild(b);lg.appendChild(li)});
+// ----- View
+const VIEW={rx:-28,ry:-140},STORM={rx:-42,ry:-105};
+let rx=VIEW.rx,ry=VIEW.ry,zoom=1,spin=window.EMBED==='mini';
+function render(){
+ scene.style.transform=`scale(${zoom}) rotateX(${rx}deg) rotateY(${ry}deg)`;
+ const sr=ov.getBoundingClientRect();
+ labels.forEach(([l,a])=>{const r=a.getBoundingClientRect();l.style.transform=`translate(${r.left-sr.left}px,${r.top-sr.top}px)`});
+}
+const st=document.getElementById('stage');
+function fit(){const k=Math.min(st.clientWidth/560,st.clientHeight/560);zoom=window.EMBED?k*0.95:Math.max(.6,Math.min(2.2,k))}
+fit();render();window.addEventListener('resize',()=>{fit();render()});
+let drag=null;const pts=new Map();
+st.addEventListener('pointerdown',e=>{st.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);drag={x:e.clientX,y:e.clientY,rx,ry}});
+st.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,[e.clientX,e.clientY]);
+ if(pts.size===2){const [a,b]=[...pts.values()];const d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(drag.pd)zoom=Math.max(.5,Math.min(4,zoom*d/drag.pd));drag.pd=d;render();return}
+ ry=drag.ry+(e.clientX-drag.x)*0.4;rx=Math.max(-80,Math.min(10,drag.rx-(e.clientY-drag.y)*0.3));render()});
+const up=e=>{pts.delete(e.pointerId);if(pts.size===0)drag=null;else{const [a]=[...pts.values()];drag={x:a[0],y:a[1],rx,ry}}};
+st.addEventListener('pointerup',up);st.addEventListener('pointercancel',up);
+st.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.5,Math.min(4,zoom*(e.deltaY<0?1.08:0.93)));render()},{passive:false});
+function tick(){if(spin&&!drag){ry+=0.15;render()}requestAnimationFrame(tick)}tick();
+const tg=(b,v)=>b.setAttribute('aria-pressed',String(v));
+const bm=document.getElementById('bStorm');bm.onclick=()=>{const v=bm.getAttribute('aria-pressed')!=='true';tg(bm,v);st.classList.toggle('storm',v);if(v){rx=STORM.rx;ry=STORM.ry}render()};
+const bl=document.getElementById('bLabels');bl.onclick=()=>{const v=bl.getAttribute('aria-pressed')!=='true';tg(bl,v);st.classList.toggle('hide-labels',!v)};
+const bs=document.getElementById('bSpin');bs.onclick=()=>{spin=!spin;tg(bs,spin)};
+document.getElementById('bView').onclick=()=>{rx=VIEW.rx;ry=VIEW.ry;spin=false;tg(bs,false);fit();render()};
+// на планеті: кут огляду задає сайт
+if(window.EMBED==='mini'){spin=false;window.addEventListener('message',e=>{const d=e.data||{};if(d.type==='pose'){rx=d.rx;if(d.ry!==undefined)ry=d.ry;render()}})}
+})();
+</script>
+<script src="models-uk.js"></script>
+</body>
+</html>

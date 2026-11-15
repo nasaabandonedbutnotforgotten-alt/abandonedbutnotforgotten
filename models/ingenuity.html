@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>
+/* Режим вбудовування: ?embed=mini (мітка на планеті) або ?embed=card (у картці сайту) */
+window.EMBED=new URLSearchParams(location.search).get('embed');
+if(window.EMBED)document.documentElement.classList.add('embed','embed-'+window.EMBED);
+</script>
+<style>
+.embed .panel{display:none}
+.embed .wrap{min-height:0}
+.embed .stage{height:100vh;min-height:0}
+html.embed-mini,.embed-mini body{background:transparent!important;overflow:hidden}
+.embed-mini .stage{background:transparent!important;cursor:default}
+.embed-mini .scene{left:50%!important;top:60%!important}
+.embed-mini .overlay,.embed-mini .hint,.embed-mini .shadow,.embed-mini .status{display:none!important}
+.embed-card .hint{font-size:11px;left:8px;bottom:8px}
+.embed-card .label span{font-size:11px;padding:3px 6px}
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ingenuity Helicopter — 3D model</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#0B1026;color:#E6EAF5;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{display:flex;flex-wrap:wrap;min-height:100%}
+.stage{flex:999 1 560px;min-width:0;position:relative;height:100vh;min-height:520px;overflow:hidden;cursor:grab;touch-action:none;
+ background:
+  radial-gradient(3px 2px at 12% 66%,#6e3e27 50%,transparent 51%),radial-gradient(4px 2.5px at 72% 84%,#6a3a24 50%,transparent 51%),
+  radial-gradient(2px 1.5px at 28% 90%,#7a4630 50%,transparent 51%),radial-gradient(5px 3px at 88% 62%,#6f3f29 50%,transparent 51%),
+  radial-gradient(3px 2px at 40% 72%,#c2895f 50%,transparent 51%),radial-gradient(3px 2px at 60% 95%,#c2895f 50%,transparent 51%),
+  linear-gradient(180deg,#c9a184 0%,#b88a6c 22%,#9a6448 28%,#a46c4c 55%,#b47b5a 100%)}
+.stage:active{cursor:grabbing}
+.shadow{position:absolute;left:50%;top:76%;width:420px;height:90px;margin-left:-210px;margin-top:-45px;border-radius:50%;background:radial-gradient(closest-side,rgba(45,22,12,.55),rgba(45,22,12,0));pointer-events:none;transition:opacity .2s}
+.viewport{position:absolute;inset:0;perspective:1500px;perspective-origin:50% 40%}
+.scene{position:absolute;left:50%;top:70%;width:0;height:0;transform-style:preserve-3d}
+.obj{position:absolute;left:0;top:0;transform-style:preserve-3d}
+.f{position:absolute;left:0;top:0;backface-visibility:hidden;outline:1px solid rgba(0,0,0,.14)}
+.f2{position:absolute;left:0;top:0}
+.anchor{position:absolute;left:0;top:0;width:1px;height:1px}
+.overlay{position:absolute;inset:0;pointer-events:none}
+.label{position:absolute;left:0;top:0;pointer-events:none}
+.label span{position:absolute;left:8px;top:-12px;white-space:nowrap;font-size:13px;font-weight:600;background:rgba(11,16,38,.88);border:1px solid #2A3A6E;color:#fff;padding:4px 8px;border-radius:8px}
+.label i{position:absolute;left:-5px;top:-5px;width:10px;height:10px;border-radius:50%;background:#FF8A50;box-shadow:0 0 0 3px rgba(255,138,80,.3)}
+.hide-labels .label{display:none}
+.scene .hl .f,.scene .hl .f2{outline:2px solid #FF8A50;filter:brightness(1.35)}
+.panel{flex:1 1 300px;padding:28px 24px;border-left:1px solid #1E2A52;background:#0E1532;overflow:auto;max-height:100vh}
+h1{margin:0 0 6px;font-size:22px;line-height:1.25}
+.sub{margin:0 0 20px;color:#B8C2DC;font-size:14px;line-height:1.5}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+button{font:inherit;font-size:14px;font-weight:600;color:#fff;background:#1B2550;border:1px solid #2A3A6E;border-radius:10px;padding:10px 14px;min-height:44px;cursor:pointer}
+button:hover{background:#24306a}
+button[aria-pressed="true"]{background:#FF8A50;border-color:#FF8A50;color:#1a0e06}
+button:disabled{opacity:.55;cursor:default}
+ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+ol li button{width:100%;text-align:left;display:flex;flex-direction:column;gap:2px;background:#10183A;font-weight:500}
+ol li b{font-size:15px;color:#fff}
+ol li small{color:#A8B2CC;font-size:12px;line-height:1.4}
+.hint{position:absolute;left:16px;bottom:14px;font-size:13px;color:#E6EAF5;background:rgba(11,16,38,.75);padding:6px 10px;border-radius:8px;pointer-events:none}
+.status{position:absolute;right:16px;top:14px;font-size:13px;font-weight:600;color:#fff;background:rgba(11,16,38,.8);padding:6px 10px;border-radius:8px;pointer-events:none;display:none}
+.note{margin-top:20px;font-size:12px;line-height:1.5;color:#A8B2CC}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="stage" id="stage" aria-label="3D model of the Ingenuity helicopter. Drag to rotate">
+  <div class="shadow" id="shadow"></div>
+  <div class="viewport"><div class="scene" id="scene"></div></div>
+  <div class="overlay" id="overlay"></div>
+  <div class="status" id="status" aria-live="polite"></div>
+  <div class="hint">Drag to rotate · scroll or pinch to zoom</div>
+ </div>
+ <aside class="panel">
+  <h1>Ingenuity Helicopter</h1>
+  <p class="sub">The first aircraft to make a controlled flight on another planet (Mars, 2021–2024) — 3D model based on NASA/JPL photos and diagrams. Hover over a part in the list to highlight it.</p>
+  <div class="btns">
+   <button id="bFly">Take off</button>
+   <button id="bLabels" aria-pressed="true">Labels</button>
+   <button id="bSpin" aria-pressed="false">Auto-rotate</button>
+   <button id="bView">View as in the photo</button>
+  </div>
+  <ol id="legend"></ol>
+  <p class="note">Two coaxial 1.2 m rotors spin in opposite directions at about 2,400 rpm — the model shows this in slow motion. The helicopter weighs 1.8 kg and is about 49 cm tall. The model is schematic; proportions are approximate.</p>
+ </aside>
+</div>
+<script>
+(function(){
+const scene=document.getElementById('scene');
+const root=document.createElement('div');root.className='obj';scene.appendChild(root);
+const groups={};
+const PARTS=[
+ ['solar','Solar panel','Charged the batteries'],
+ ['antenna','Communications antenna','Link to the Perseverance rover'],
+ ['blades','Rotor blades','Four carbon-fiber blades, two 1.2 m rotors'],
+ ['motors','Motors and controls','Propulsion motors, swashplates and control linkages'],
+ ['fuselage','Fuselage','Insulated box: batteries, electronics, sensors, cameras'],
+ ['legs','Landing legs','Four thin legs']
+];
+function shade(hex,k){const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;r=Math.min(255,r*k|0);g=Math.min(255,g*k|0);b=Math.min(255,b*k|0);return `rgb(${r},${g},${b})`}
+function grp(id){if(!groups[id]){const g=document.createElement('div');g.className='obj';g.dataset.part=id;root.appendChild(g);groups[id]=g}return groups[id]}
+function wrap(parent,t){const o=document.createElement('div');o.className='obj';o.style.transform=t;parent.appendChild(o);return o}
+function box(parent,x,y,z,w,h,d,color,bg){
+ bg=bg||{};const o=document.createElement('div');o.className='obj';
+ o.style.transform=`translate3d(${x+w/2}px,${-(y+h/2)}px,${z+d/2}px)`;
+ const faces=[[w,h,`translateZ(${d/2}px)`,0.85],[w,h,`rotateY(180deg) translateZ(${d/2}px)`,0.55],
+  [d,h,`rotateY(90deg) translateZ(${w/2}px)`,0.98],[d,h,`rotateY(-90deg) translateZ(${w/2}px)`,0.5],
+  [w,d,`rotateX(90deg) translateZ(${h/2}px)`,1.05],[w,d,`rotateX(-90deg) translateZ(${h/2}px)`,0.32]];
+ faces.forEach((f,i)=>{const e=document.createElement('div');e.className='f';e.style.width=f[0]+'px';e.style.height=f[1]+'px';
+  e.style.marginLeft=(-f[0]/2)+'px';e.style.marginTop=(-f[1]/2)+'px';e.style.transform=f[2];e.style.background=bg[i]||shade(color,f[3]);o.appendChild(e)});
+ parent.appendChild(o);return o;
+}
+function rod(parent,p,q,t,color){
+ const dx=q[0]-p[0],dy=-(q[1]-p[1]),dz=q[2]-p[2];const L=Math.hypot(dx,dy,dz);
+ const b=Math.asin(dy/L)*180/Math.PI,a=Math.atan2(-dz,dx)*180/Math.PI;
+ const o=wrap(parent,`translate3d(${(p[0]+q[0])/2}px,${-(p[1]+q[1])/2}px,${(p[2]+q[2])/2}px) rotateY(${a}deg) rotateZ(${b}deg)`);
+ box(o,-L/2,-t/2,-t/2,L,t,t,color);return o;
+}
+function cyl(parent,x,y,z,r,h,color,N){
+ N=N||12;const o=wrap(parent,`translate3d(${x}px,${-y}px,${z}px)`);const chord=2*r*Math.sin(Math.PI/N)+1;
+ for(let i=0;i<N;i++){const a=360/N*i;const e=document.createElement('div');e.className='f2';
+  e.style.cssText+=`width:${chord}px;height:${h}px;margin-left:${-chord/2}px;margin-top:${-h/2}px;background:${shade(color,0.55+0.5*Math.max(0,Math.cos((a-40)*Math.PI/180)))};transform:rotateY(${a}deg) translateZ(${r}px)`;o.appendChild(e)}
+ [h/2,-h/2].forEach((yy,k)=>{const d=document.createElement('div');d.className='f2';d.style.cssText+=`width:${2*r}px;height:${2*r}px;margin-left:${-r}px;margin-top:${-r}px;border-radius:50%;background:${shade(color,k?0.4:1.0)};transform:translateY(${-yy}px) rotateX(90deg)`;o.appendChild(d)});
+ return o;
+}
+// ----- Fuselage
+const F=grp('fuselage');
+box(F,-34,70,-28,68,52,56,'#cdbb8e',{0:'linear-gradient(160deg,#e2d3a8,#b9a675)',2:'linear-gradient(160deg,#d9c99b,#a8955f)'});
+box(F,-36,118,-30,72,6,60,'#5a5450');
+// ----- Legs: from fuselage top corners outward and down
+const L=grp('legs');
+[[1,1],[1,-1],[-1,1],[-1,-1]].forEach(([sx,sz])=>{const top=[sx*30,120,sz*24],foot=[sx*125,4,sz*110];rod(L,top,foot,4,'#3b3634');box(L,foot[0]-9,0,foot[2]-6,18,6,12,'#d9dbe0')});
+// ----- Mast, motors and swashplates
+const M=grp('motors');
+cyl(M,0,158,0,5,76,'#4a4644',10);
+cyl(M,0,134,0,16,14,'#2e2b2a',12);cyl(M,0,150,0,22,4,'#8b8f97',14);   // lower motor + swashplate
+cyl(M,0,186,0,14,12,'#2e2b2a',12);cyl(M,0,172,0,20,4,'#8b8f97',14);   // upper motor + swashplate
+[[0,14],[120,14],[240,14]].forEach(([a,r])=>{const p=[r*Math.cos(a*Math.PI/180),0,r*Math.sin(a*Math.PI/180)];rod(M,[p[0],126,p[2]],[p[0],148,p[2]],2,'#c0c3ca');rod(M,[p[0],174,p[2]],[p[0],184,p[2]],2,'#c0c3ca')});
+// ----- Rotors (two, counter-rotating)
+const B=grp('blades');
+const BLADE='repeating-conic-gradient(from 45deg,rgba(255,255,255,.07) 0 25%,rgba(0,0,0,.07) 0 50%) 0 0/14px 14px,linear-gradient(90deg,#4d3f3a,#6a5751 60%,#5b4a44)';
+function rotor(y,pitch){
+ const r=wrap(B,`translate3d(0px,${-y}px,0px)`);
+ [0,180].forEach(a=>{const arm=wrap(r,`rotateY(${a}deg)`);const e=document.createElement('div');e.className='f2';
+  e.style.cssText+=`width:240px;height:34px;margin-top:-17px;margin-left:6px;border-radius:12% 60% 50% 12% / 40% 100% 70% 40%;background:${BLADE};transform:rotateX(${90+pitch}deg)`;arm.appendChild(e)});
+ return r;
+}
+const upper=rotor(160,-6),lower=rotor(143,6);
+// ----- Solar panel + antenna
+const S=grp('solar');
+box(S,-90,196,-38,180,4,76,'#2b2f3a',{4:'repeating-linear-gradient(90deg,#9aa0ad 0 1px,transparent 1px 15px),repeating-linear-gradient(0deg,#8a8fa0 0 1px,transparent 1px 19px),linear-gradient(135deg,#3a4256,#20252f)'});
+const AN=grp('antenna');box(AN,-6,200,-6,12,4,12,'#2a7a3f');rod(AN,[4,200,0],[4,232,0],3,'#e3c24a');
+// ----- Labels
+const LP={solar:[-80,205,-30],antenna:[4,232,0],blades:[220,162,0],motors:[20,140,0],fuselage:[-34,90,28],legs:[125,10,110]};
+const ov=document.getElementById('overlay');const labels=[];
+PARTS.forEach(([id,name])=>{const a=document.createElement('div');a.className='anchor';const p=LP[id];a.style.transform=`translate3d(${p[0]}px,${-p[1]}px,${p[2]}px)`;(id==='blades'?upper:root).appendChild(a);
+ if(id==='blades')a.style.transform=`translate3d(220px,0px,0px)`;
+ const l=document.createElement('div');l.className='label';l.innerHTML=`<i></i><span>${name}</span>`;ov.appendChild(l);labels.push([l,a])});
+const lg=document.getElementById('legend');
+PARTS.forEach(([id,name,en])=>{const li=document.createElement('li');const b=document.createElement('button');b.innerHTML=`<b>${name}</b><small>${en}</small>`;
+ const on=()=>groups[id].classList.add('hl'),off=()=>groups[id].classList.remove('hl');
+ b.addEventListener('mouseenter',on);b.addEventListener('mouseleave',off);b.addEventListener('focus',on);b.addEventListener('blur',off);li.appendChild(b);lg.appendChild(li)});
+// ----- View & flight
+const VIEW={rx:-30,ry:-25};
+let rx=VIEW.rx,ry=VIEW.ry,zoom=1,spin=window.EMBED==='mini';
+let rotA=20,alt=0,flight=null,rpm=0;
+const sh=document.getElementById('shadow'),stat=document.getElementById('status');
+function render(){
+ scene.style.transform=`scale(${zoom}) rotateX(${rx}deg) rotateY(${ry}deg)`;
+ root.style.transform=`translate3d(0px,${-alt}px,0px)`;
+ upper.style.transform=`translate3d(0px,-160px,0px) rotateY(${rotA}deg)`;
+ lower.style.transform=`translate3d(0px,-143px,0px) rotateY(${-rotA+90}deg)`;
+ sh.style.opacity=String(Math.max(.25,1-alt/260));sh.style.transform=`scale(${zoom*(1-alt/700)})`;
+ const sr=ov.getBoundingClientRect();
+ labels.forEach(([l,a])=>{const r=a.getBoundingClientRect();l.style.transform=`translate(${r.left-sr.left}px,${r.top-sr.top}px)`});
+}
+const st=document.getElementById('stage');
+function fit(){const k=Math.min(st.clientWidth/700,st.clientHeight/560);zoom=window.EMBED?k*0.95:Math.max(.5,Math.min(1.6,k))}
+fit();render();window.addEventListener('resize',()=>{fit();render()});
+let drag=null;const pts=new Map();
+st.addEventListener('pointerdown',e=>{st.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);drag={x:e.clientX,y:e.clientY,rx,ry}});
+st.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,[e.clientX,e.clientY]);
+ if(pts.size===2){const [a,b]=[...pts.values()];const d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(drag.pd)zoom=Math.max(.35,Math.min(3,zoom*d/drag.pd));drag.pd=d;render();return}
+ ry=drag.ry+(e.clientX-drag.x)*0.4;rx=Math.max(-85,Math.min(10,drag.rx-(e.clientY-drag.y)*0.3));render()});
+const up=e=>{pts.delete(e.pointerId);if(pts.size===0)drag=null;else{const [a]=[...pts.values()];drag={x:a[0],y:a[1],rx,ry}}};
+st.addEventListener('pointerup',up);st.addEventListener('pointercancel',up);
+st.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.35,Math.min(3,zoom*(e.deltaY<0?1.08:0.93)));render()},{passive:false});
+const bf=document.getElementById('bFly');
+function say(t){stat.textContent=t;stat.style.display=t?'block':'none'}
+bf.onclick=()=>{if(flight)return;flight={t:0};bf.disabled=true};
+// flight profile (seconds): spin-up 0–2, climb 2–4.5, hover 4.5–7, descend 7–9.5, spin-down 9.5–11
+let last=performance.now();
+function tick(now){
+ const dt=Math.min(.05,(now-last)/1000);last=now;let dirty=false;
+ if(flight){flight.t+=dt;const t=flight.t;
+  if(t<2){rpm=t/2;alt=0;say('Rotors spinning up')}
+  else if(t<4.5){rpm=1;alt=150*easeInOut((t-2)/2.5);say('Take-off')}
+  else if(t<7){rpm=1;alt=150+Math.sin((t-4.5)*3)*3;say('Hovering')}
+  else if(t<9.5){rpm=1;alt=150*(1-easeInOut((t-7)/2.5));say('Landing')}
+  else if(t<11){rpm=1-(t-9.5)/1.5;alt=0;say('Rotors stopping')}
+  else{rpm=0;flight=null;bf.disabled=false;say('')}
+  dirty=true}
+ if(rpm>0){rotA+=rpm*1500*dt;dirty=true}
+ if(spin&&!drag){ry+=0.15;dirty=true}
+ if(dirty)render();requestAnimationFrame(tick)}
+function easeInOut(x){return x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2}
+requestAnimationFrame(tick);
+const tg=(b,v)=>b.setAttribute('aria-pressed',String(v));
+const bl=document.getElementById('bLabels');bl.onclick=()=>{const v=bl.getAttribute('aria-pressed')!=='true';tg(bl,v);st.classList.toggle('hide-labels',!v)};
+const bs=document.getElementById('bSpin');bs.onclick=()=>{spin=!spin;tg(bs,spin)};
+document.getElementById('bView').onclick=()=>{rx=VIEW.rx;ry=VIEW.ry;spin=false;tg(bs,false);fit();render()};
+// на планеті: кут огляду задає сайт
+if(window.EMBED==='mini'){spin=false;window.addEventListener('message',e=>{const d=e.data||{};if(d.type==='pose'){rx=d.rx;if(d.ry!==undefined)ry=d.ry;render()}})}
+})();
+</script>
+<script src="models-uk.js"></script>
+</body>
+</html>

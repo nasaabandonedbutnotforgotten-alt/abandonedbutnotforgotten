@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>
+/* Режим вбудовування: ?embed=mini (мітка на планеті) або ?embed=card (у картці сайту) */
+window.EMBED=new URLSearchParams(location.search).get('embed');
+if(window.EMBED)document.documentElement.classList.add('embed','embed-'+window.EMBED);
+</script>
+<style>
+.embed .panel{display:none}
+.embed .wrap{min-height:0}
+.embed .stage{height:100vh;min-height:0}
+html.embed-mini,.embed-mini body{background:transparent!important;overflow:hidden}
+.embed-mini .stage{background:transparent!important;cursor:default}
+.embed-mini .scene{left:50%!important;top:60%!important}
+.embed-mini .overlay,.embed-mini .hint,.embed-mini .shadow,.embed-mini .status{display:none!important}
+.embed-card .hint{font-size:11px;left:8px;bottom:8px}
+.embed-card .label span{font-size:11px;padding:3px 6px}
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apollo Lunar Roving Vehicle (LRV) — 3D model</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#0B1026;color:#E6EAF5;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{display:flex;flex-wrap:wrap;min-height:100%}
+.stage{flex:999 1 560px;min-width:0;position:relative;height:100vh;min-height:520px;overflow:hidden;cursor:grab;touch-action:none;
+ background:
+  radial-gradient(ellipse 55% 14% at 50% 76%,rgba(30,29,27,.6),rgba(0,0,0,0) 70%),
+  radial-gradient(2px 1.5px at 12% 66%,#4d4b47 50%,transparent 51%),radial-gradient(3px 2px at 72% 84%,#4a4844 50%,transparent 51%),
+  radial-gradient(2px 1.5px at 28% 90%,#55534f 50%,transparent 51%),radial-gradient(4px 2.5px at 88% 62%,#4f4d49 50%,transparent 51%),
+  linear-gradient(180deg,#020306 0%,#020306 30%,#3f3d3a 34%,#6b6965 55%,#85827d 100%)}
+.stage:active{cursor:grabbing}
+.viewport{position:absolute;inset:0;perspective:1900px;perspective-origin:50% 40%}
+.scene{position:absolute;left:50%;top:62%;width:0;height:0;transform-style:preserve-3d}
+.obj{position:absolute;left:0;top:0;transform-style:preserve-3d}
+.f{position:absolute;left:0;top:0;backface-visibility:hidden;outline:1px solid rgba(0,0,0,.14)}
+.f2{position:absolute;left:0;top:0;outline:1px solid rgba(0,0,0,.18)}
+.anchor{position:absolute;left:0;top:0;width:1px;height:1px}
+.overlay{position:absolute;inset:0;pointer-events:none}
+.label{position:absolute;left:0;top:0;pointer-events:none}
+.label span{position:absolute;left:8px;top:-12px;white-space:nowrap;font-size:13px;font-weight:600;background:rgba(11,16,38,.88);border:1px solid #2A3A6E;color:#fff;padding:4px 8px;border-radius:8px}
+.label i{position:absolute;left:-5px;top:-5px;width:10px;height:10px;border-radius:50%;background:#FF8A50;box-shadow:0 0 0 3px rgba(255,138,80,.3)}
+.hide-labels .label{display:none}
+.hl .f,.hl .f2{outline:2px solid #FF8A50;filter:brightness(1.2)}
+.panel{flex:1 1 300px;padding:28px 24px;border-left:1px solid #1E2A52;background:#0E1532;overflow:auto;max-height:100vh}
+h1{margin:0 0 6px;font-size:22px;line-height:1.25}
+.sub{margin:0 0 20px;color:#B8C2DC;font-size:14px;line-height:1.5}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+button{font:inherit;font-size:14px;font-weight:600;color:#fff;background:#1B2550;border:1px solid #2A3A6E;border-radius:10px;padding:10px 14px;min-height:44px;cursor:pointer}
+button:hover{background:#24306a}
+button[aria-pressed="true"]{background:#FF8A50;border-color:#FF8A50;color:#1a0e06}
+ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+ol li button{width:100%;text-align:left;display:flex;flex-direction:column;gap:2px;background:#10183A;font-weight:500}
+ol li b{font-size:15px;color:#fff}
+ol li small{color:#A8B2CC;font-size:12px;line-height:1.4}
+.hint{position:absolute;left:16px;bottom:14px;font-size:13px;color:#E6EAF5;background:rgba(11,16,38,.75);padding:6px 10px;border-radius:8px;pointer-events:none}
+.note{margin-top:20px;font-size:12px;line-height:1.5;color:#A8B2CC}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="stage" id="stage" aria-label="3D model of the lunar rover. Drag to rotate">
+  <div class="viewport"><div class="scene" id="scene"></div></div>
+  <div class="overlay" id="overlay"></div>
+  <div class="hint">Drag to rotate · scroll or pinch to zoom</div>
+ </div>
+ <aside class="panel">
+  <h1>Apollo Lunar Roving Vehicle (LRV)</h1>
+  <p class="sub">Lunar Roving Vehicle — 3D model based on NASA photos and diagrams. Hover over a part in the list to highlight it.</p>
+  <div class="btns">
+   <button id="bLabels" aria-pressed="true">Labels</button>
+   <button id="bSpin" aria-pressed="false">Auto-rotate</button>
+   <button id="bSide">Side view (as in the photo)</button>
+   <button id="bPersp">View as in the diagram</button>
+  </div>
+  <ol id="legend"></ol>
+  <p class="note">A schematic educational model: the shape and proportions are approximate, not from exact drawings.</p>
+ </aside>
+</div>
+<script>
+(function(){
+const scene=document.getElementById('scene');
+const groups={};
+const PARTS=[
+ ['hga','High-gain antenna','The “umbrella” for talking to Earth'],
+ ['lga','Low-gain antenna','Voice communication'],
+ ['tv','GCTA TV camera','Ground-controlled TV — operated from Earth'],
+ ['lcru','LCRU comms unit','Lunar Communications Relay Unit — a relay'],
+ ['cam','16 mm film camera','Filmed the drives'],
+ ['console','Console & hand controller','T-shaped handle between the seats instead of a steering wheel'],
+ ['seats','Seats','Two folding seats with fabric webbing'],
+ ['wheels','Wheels','Steel-wire mesh with titanium chevrons; a motor in each wheel'],
+ ['fenders','Fenders','Protected against lunar dust'],
+ ['chassis','Chassis','Folding aluminum frame; batteries and electronics at the front'],
+ ['pallet','Aft tool pallet','Tools and sample bags']
+];
+function shade(hex,k){const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;r=Math.min(255,r*k|0);g=Math.min(255,g*k|0);b=Math.min(255,b*k|0);return `rgb(${r},${g},${b})`}
+function grp(id){if(!groups[id]){const g=document.createElement('div');g.className='obj';g.dataset.part=id;scene.appendChild(g);groups[id]=g}return groups[id]}
+// box: x,y,z min corner (y up); bg = optional per-face backgrounds {0:+z,1:-z,2:+x,3:-x,4:top}
+function box(parent,x,y,z,w,h,d,color,bg){
+ bg=bg||{};
+ const o=document.createElement('div');o.className='obj';
+ o.style.transform=`translate3d(${x+w/2}px,${-(y+h/2)}px,${z+d/2}px)`;
+ const faces=[
+  [w,h,`translateZ(${d/2}px)`,0.85],[w,h,`rotateY(180deg) translateZ(${d/2}px)`,0.55],
+  [d,h,`rotateY(90deg) translateZ(${w/2}px)`,0.98],[d,h,`rotateY(-90deg) translateZ(${w/2}px)`,0.5],
+  [w,d,`rotateX(90deg) translateZ(${h/2}px)`,1.05],[w,d,`rotateX(-90deg) translateZ(${h/2}px)`,0.32]];
+ faces.forEach((f,i)=>{const e=document.createElement('div');e.className='f';e.style.width=f[0]+'px';e.style.height=f[1]+'px';
+  e.style.marginLeft=(-f[0]/2)+'px';e.style.marginTop=(-f[1]/2)+'px';e.style.transform=f[2];e.style.background=bg[i]||shade(color,f[3]);
+  o.appendChild(e)});
+ parent.appendChild(o);return o;
+}
+// wrapper with custom transform (for tilted parts)
+function wrap(parent,t){const o=document.createElement('div');o.className='obj';o.style.transform=t;parent.appendChild(o);return o}
+// wheel: axis along z
+const TIRE='repeating-linear-gradient(90deg,#9a9a96 0 3px,#5d5d5a 3px 6px),#777';
+const CHEV='repeating-linear-gradient(0deg,rgba(40,40,40,.0) 0 6px,rgba(30,30,30,.55) 6px 9px)';
+function wheel(cx,cy,cz,r,w){
+ const G=grp('wheels');const o=wrap(G,`translate3d(${cx}px,${-cy}px,${cz}px)`);
+ const N=22,chord=2*r*Math.sin(Math.PI/N)+1;
+ for(let i=0;i<N;i++){const a=360/N*i;const e=document.createElement('div');e.className='f2';
+  e.style.cssText+=`width:${chord}px;height:${w}px;margin-left:${-chord/2}px;margin-top:${-w/2}px;background:${CHEV},${TIRE};filter:brightness(${0.6+0.5*Math.max(0,Math.cos((a-30)*Math.PI/180))});transform:rotateZ(${a}deg) translateY(${-r}px) rotateX(90deg)`;
+  o.appendChild(e)}
+ [w/2,-w/2].forEach(z=>{const d=document.createElement('div');d.className='f2';
+  d.style.cssText+=`width:${2*r}px;height:${2*r}px;margin-left:${-r}px;margin-top:${-r}px;border-radius:50%;transform:translateZ(${z}px);
+  background:radial-gradient(circle,#2b2b2b 0 9%,#d9d9d6 10% 16%,#bfc0bd 17% 52%,#8e8f8c 53% 56%,${'#6d6d6a'} 57% 72%,#4b4b48 73% 100%);outline:none`;
+  o.appendChild(d)});
+ // dark stripe on hub (as on the photo)
+ const s=document.createElement('div');s.className='f2';s.style.cssText+=`width:10px;height:${r*1.0}px;margin-left:-5px;margin-top:${-r*0.5}px;background:#222;transform:translateZ(${w/2+1}px) rotateZ(20deg);outline:none`;o.appendChild(s);
+}
+// fender: half ring of plates above the wheel
+function fender(cx,cy,cz,r,w){
+ const G=grp('fenders');const o=wrap(G,`translate3d(${cx}px,${-cy}px,${cz}px)`);
+ const N=10,chord=2*r*Math.sin(Math.PI/(N*2.2))+2;
+ for(let i=0;i<=N;i++){const a=-85+170/N*i;const e=document.createElement('div');e.className='f2';
+  e.style.cssText+=`width:${chord}px;height:${w}px;margin-left:${-chord/2}px;margin-top:${-w/2}px;background:#a9aaa6;filter:brightness(${0.75+0.35*Math.cos(a*Math.PI/180)});transform:rotateZ(${a}deg) translateY(${-r}px) rotateX(90deg)`;
+  o.appendChild(e)}
+}
+const AL='#c3c5c9',DK='#5c6170',WH='#e8e9ec',GR='#8b8f97';
+const CHECK='repeating-linear-gradient(90deg,#111 0 18px,#eee 18px 36px)';
+// ----- Chassis
+const C=grp('chassis');
+box(C,-270,96,-150,540,16,300,AL,{0:CHECK,1:CHECK});
+box(C,-270,112,-140,140,8,280,GR);           // aft floor
+box(C,-130,104,-140,250,8,280,'#9ea2aa');    // crew floor
+box(C,140,112,-150,150,30,300,'#b9bcc2');    // forward chassis (batteries, electronics)
+box(C,150,142,-140,60,16,120,WH);box(C,150,142,20,60,16,120,WH);   // battery covers
+box(C,-110,96,-160,20,40,20,DK);box(C,-110,96,140,20,40,20,DK);   // suspension towers
+box(C,190,96,-160,20,40,20,DK);box(C,190,96,140,20,40,20,DK);
+// ----- Wheels & fenders
+[[-225,-205],[-225,205],[225,-205],[225,205]].forEach(([x,z])=>{wheel(x,82,z,82,46);fender(x,82,z,96,54)});
+// ----- Seats (seat pan + reclined back with webbing)
+const S=grp('seats');
+const WEB='repeating-linear-gradient(90deg,#d8d8d4 0 6px,#8f8f8a 6px 8px),#ccc';
+[-125,15].forEach(z=>{
+ box(S,-60,120,z,100,10,110,'#cfd0cc',{4:WEB});
+ const b=wrap(S,`translate3d(-60px,-125px,${z+55}px) rotateZ(-14deg)`);box(b,-10,0,-55,10,130,110,'#cfd0cc',{2:WEB,3:WEB});
+ box(S,-70,112,z,10,20,110,DK);
+});
+// ----- Console + T-handle
+const K=grp('console');
+box(K,80,112,-12,12,120,12,AL);                       // console post
+box(K,60,230,-45,60,40,90,'#4b505e',{4:'linear-gradient(#2c303a,#2c303a)'});   // display console
+box(K,20,112,-8,40,40,16,DK);box(K,30,152,-4,8,40,8,AL);box(K,18,190,-18,32,8,36,AL); // T-handle
+// ----- 16mm camera on the console mast
+const M=grp('cam');box(M,96,270,-30,36,26,22,'#9da1a8');box(M,132,276,-25,16,14,12,'#2b2e36');
+// ----- Low-gain antenna (helix)
+const L=grp('lga');box(L,100,270,40,6,150,6,AL);box(L,96,380,36,14,60,14,'#d0d2d6',{0:'repeating-linear-gradient(0deg,#555 0 2px,#ddd 2px 6px)',2:'repeating-linear-gradient(0deg,#555 0 2px,#ddd 2px 6px)'});
+// ----- LCRU (front box)
+const R=grp('lcru');box(R,230,142,-70,60,50,140,'#d9dadd');box(R,240,192,-60,40,10,120,'#bfc1c6');
+// ----- TV camera GCTA on a short mast
+const T=grp('tv');box(T,250,192,-10,8,70,8,AL);box(T,232,262,-30,50,40,40,'#a8acb4');box(T,282,268,-18,22,26,16,'#2b2e36');
+// ----- Hi-gain antenna: mast + umbrella dish
+const H=grp('hga');box(H,262,142,-110,8,300,8,AL);
+const dish=wrap(H,`translate3d(266px,-460px,-106px) rotateY(25deg) rotateX(62deg)`);
+['translateZ(0px)','rotateY(180deg)'].forEach(t=>{const d=document.createElement('div');d.className='f';
+ d.style.cssText+=`width:180px;height:180px;margin-left:-90px;margin-top:-90px;border-radius:50%;transform:${t};
+ background:repeating-conic-gradient(#e5e6e2 0 2deg,#9c9d99 2deg 3deg,#c9cac6 3deg 30deg),#ccc;border:3px solid #8a8b87`;dish.appendChild(d)});
+box(H,258,440,-114,16,22,16,'#b7b9bd');
+// ----- Aft pallet (tool carrier) with gnomon and bags
+const P=grp('pallet');
+box(P,-320,112,-110,60,170,220,'#c9cbcf',{3:'repeating-linear-gradient(0deg,#9fa2a8 0 3px,#d4d6da 3px 22px),repeating-linear-gradient(90deg,#9fa2a8 0 3px,transparent 3px 40px)'});
+box(P,-310,282,-60,8,90,8,'#e8e8e8');box(P,-330,180,-100,14,60,60,'#d7d2c4');box(P,-330,180,40,14,60,60,'#d7d2c4');
+// ----- Labels
+const LP={hga:[266,520,-106],lga:[103,445,43],tv:[290,300,-10],lcru:[290,180,0],cam:[140,300,-20],console:[40,250,0],seats:[-40,200,-70],wheels:[225,150,230],fenders:[-225,190,230],chassis:[0,100,155],pallet:[-330,300,0]};
+const ov=document.getElementById('overlay');const labels=[];
+PARTS.forEach(([id,name])=>{const a=document.createElement('div');a.className='anchor';const p=LP[id];a.style.transform=`translate3d(${p[0]}px,${-p[1]}px,${p[2]}px)`;scene.appendChild(a);
+ const l=document.createElement('div');l.className='label';l.innerHTML=`<i></i><span>${name}</span>`;ov.appendChild(l);labels.push([l,a])});
+const lg=document.getElementById('legend');
+PARTS.forEach(([id,name,en])=>{const li=document.createElement('li');const b=document.createElement('button');b.innerHTML=`<b>${name}</b><small>${en}</small>`;
+ const on=()=>groups[id].classList.add('hl'),off=()=>groups[id].classList.remove('hl');
+ b.addEventListener('mouseenter',on);b.addEventListener('mouseleave',off);b.addEventListener('focus',on);b.addEventListener('blur',off);
+ li.appendChild(b);lg.appendChild(li)});
+// ----- View
+const SIDE={rx:-6,ry:0},PERSP={rx:-22,ry:215};
+let rx=PERSP.rx,ry=PERSP.ry,zoom=1,spin=window.EMBED==='mini';
+function render(){
+ scene.style.transform=`scale(${zoom}) rotateX(${rx}deg) rotateY(${ry}deg)`;
+ const sr=ov.getBoundingClientRect();
+ labels.forEach(([l,a])=>{const r=a.getBoundingClientRect();l.style.transform=`translate(${r.left-sr.left}px,${r.top-sr.top}px)`});
+}
+const st=document.getElementById('stage');
+function fit(){const k=Math.min(st.clientWidth/1150,st.clientHeight/900);zoom=window.EMBED?k*0.95:Math.max(.4,Math.min(1.1,k))}
+fit();render();window.addEventListener('resize',()=>{fit();render()});
+let drag=null;const pts=new Map();
+st.addEventListener('pointerdown',e=>{st.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);drag={x:e.clientX,y:e.clientY,rx,ry}});
+st.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,[e.clientX,e.clientY]);
+ if(pts.size===2){const [a,b]=[...pts.values()];const d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(drag.pd)zoom=Math.max(.35,Math.min(2.5,zoom*d/drag.pd));drag.pd=d;render();return}
+ ry=drag.ry+(e.clientX-drag.x)*0.4;rx=Math.max(-80,Math.min(5,drag.rx-(e.clientY-drag.y)*0.3));render()});
+const up=e=>{pts.delete(e.pointerId);if(pts.size===0)drag=null;else{const [a]=[...pts.values()];drag={x:a[0],y:a[1],rx,ry}}};
+st.addEventListener('pointerup',up);st.addEventListener('pointercancel',up);
+st.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.35,Math.min(2.5,zoom*(e.deltaY<0?1.08:0.93)));render()},{passive:false});
+function tick(){if(spin&&!drag){ry+=0.15;render()}requestAnimationFrame(tick)}tick();
+const tg=(b,v)=>b.setAttribute('aria-pressed',String(v));
+const bl=document.getElementById('bLabels');bl.onclick=()=>{const v=bl.getAttribute('aria-pressed')!=='true';tg(bl,v);st.classList.toggle('hide-labels',!v)};
+const bs=document.getElementById('bSpin');bs.onclick=()=>{spin=!spin;tg(bs,spin)};
+document.getElementById('bSide').onclick=()=>{rx=SIDE.rx;ry=SIDE.ry;spin=false;tg(bs,false);fit();render()};
+document.getElementById('bPersp').onclick=()=>{rx=PERSP.rx;ry=PERSP.ry;spin=false;tg(bs,false);fit();render()};
+// на планеті: кут огляду задає сайт
+if(window.EMBED==='mini'){spin=false;window.addEventListener('message',e=>{const d=e.data||{};if(d.type==='pose'){rx=d.rx;if(d.ry!==undefined)ry=d.ry;render()}})}
+})();
+</script>
+<script src="models-uk.js"></script>
+</body>
+</html>

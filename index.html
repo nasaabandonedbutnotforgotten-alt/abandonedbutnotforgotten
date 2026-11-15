@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Abandoned but Not Forgotten</title>
+
+  <!-- Шрифти -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Зірки на фоні -->
+  <canvas id="stars"></canvas>
+
+  <!-- ===== ВЕРХНЯ ПАНЕЛЬ ===== -->
+  <header class="topbar">
+    <a class="logo" href="index.html">Abandoned <em>but not</em> Forgotten</a>
+    <nav class="menu">
+      <a class="tab active" href="index.html">Home</a>
+      <a class="tab" href="moon.html">Moon</a>
+      <a class="tab" href="mars.html">Mars</a>
+      <a class="tab" href="quiz.html">Quiz</a>
+      <a class="tab" href="about.html">About us</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ===== 1. СОНЯЧНА СИСТЕМА + ЗАГОЛОВОК ===== -->
+    <section class="hero">
+      <div class="solar" id="solar"></div>
+      <div class="tooltip" id="tooltip"></div>
+
+      <div class="hero-text">
+        <h1>Abandoned but Not Forgotten</h1>
+        <p class="subtitle">Stories of the spacecraft humanity left on the Moon and Mars</p>
+        <div class="cta">
+          <a class="btn" href="moon.html">Explore the Moon</a>
+          <a class="btn outline" href="mars.html">Explore Mars</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 2. ЧОМУ САМЕ ЗАРАЗ ===== -->
+    <section class="block reveal">
+      <h2>Why now?</h2>
+      <p>Space is getting busier than ever. Every year, new rockets launch thousands of satellites, and countries and private companies are sending new missions back to the Moon. In 2024, a private company landed a spacecraft there for the first time.</p>
+      <p>But what about the machines that were there before? Rovers, landers and instruments from past missions are still sitting on the Moon and Mars. Most people have never heard their names. Some of them are still working. Others went silent years ago.</p>
+      <p class="accent">As new missions arrive, these places risk being damaged or forgotten.</p>
+    </section>
+
+    <!-- ===== 3. ПРОБЛЕМА ===== -->
+    <section class="block reveal">
+      <h2>The problem</h2>
+      <p>There are many websites about space objects, but most of them are made for scientists and engineers. They show thousands of dots, technical data and long reports. They mostly focus on Earth's orbit. And they rarely tell the story behind each machine.</p>
+      <p>For a student or anyone just curious about space, it is hard to understand what is really out there — and why it matters.</p>
+    </section>
+
+    <!-- ===== 4. НАША ІДЕЯ ===== -->
+    <section class="block reveal">
+      <h2>Our idea</h2>
+      <p class="lead">We turned NASA data into stories.</p>
+      <p>On our website, every spacecraft on the Moon and Mars is shown at its real landing site on a 3D planet. Click on it, and it tells you its story: how it got there, what it discovered, why it stopped and what is happening to it today.</p>
+      <p class="big-quote">Not dots. Not tables. <span>Stories.</span></p>
+    </section>
+
+    <!-- ===== ЦІЛЬОВА АУДИТОРІЯ ===== -->
+    <section class="block wide reveal">
+      <h2>Who it is for</h2>
+      <p class="lead">We made this website for school-age space enthusiasts.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="num">🎒</div>
+          <h3>Students aged 10–16</h3>
+          <p>Short stories, 3D models, real NASA photos and a quiz. No science degree needed.</p>
+        </div>
+        <div class="step">
+          <div class="num">🍎</div>
+          <h3>Teachers</h3>
+          <p>A ready-made visual lesson about space history, engineering and planetary science.</p>
+        </div>
+        <div class="step">
+          <div class="num">🔭</div>
+          <h3>Families and space fans</h3>
+          <p>Anyone curious about what humanity has left on other worlds — in English and Ukrainian.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 5. ЯК ЦЕ ПРАЦЮЄ ===== -->
+    <section class="block wide reveal">
+      <h2>How it works</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <h3>Choose a world</h3>
+          <p>The Moon or Mars.</p>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <h3>Spin the planet</h3>
+          <p>Turn the 3D planet and find the glowing points.</p>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <h3>Read the story</h3>
+          <p>Click a point to meet the spacecraft and read its story.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== ЦІКАВІ ФАКТИ (рахуються з даних карт: facts.js) ===== -->
+    <section class="block wide reveal">
+      <h2>Fun facts</h2>
+      <p class="lead">Records from our Moon and Mars maps.</p>
+      <p id="funFactsTotal" class="ff-total"></p>
+      <div class="ff-grid" id="funFacts"></div>
+    </section>
+
+    <!-- ===== 6. ЧОМУ ЇХ ВАРТО БЕРЕГТИ ===== -->
+    <section class="block reveal">
+      <h2>Why protect them?</h2>
+      <p>On the Moon there is no wind and no rain. The astronauts' bootprints and rover tracks from 1969–1972 are still there — NASA's Lunar Reconnaissance Orbiter can see them from orbit. But one careless landing nearby could blast them away for ever.</p>
+      <p>NASA has already started to protect these places. In 2011 it published recommendations asking all future missions to keep their distance from the Apollo landing sites. In 2020 the One Small Step to Protect Human Heritage in Space Act became U.S. law: companies that work with NASA on the Moon must follow these rules.</p>
+      <p class="accent">Protection starts with knowing these places exist. That is what our website is for.</p>
+    </section>
+
+    <!-- ===== 7. ЧОМУ ЦЕ ВАЖЛИВО ===== -->
+    <section class="block final reveal">
+      <h2>Why it matters</h2>
+      <p>Most human-made objects around Earth have already become space junk. But the machines on the Moon and Mars are different. They are the first footprints of humanity on other worlds — our shared history.</p>
+      <p class="accent">We believe they should be remembered and protected, not forgotten.</p>
+      <div class="cta">
+        <a class="btn" href="moon.html">Start exploring</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== ПІДВАЛ ===== -->
+  <footer class="footer">
+    <div class="logo">Abandoned <em>but not</em> Forgotten</div>
+    <p>Data and photos: NASA · NASA Science · NASA JPL · LROC (NASA/ASU)</p>
+    <p><span>Questions or corrections?</span> <a href="mailto:nasaabandonedbutnotforgotten@gmail.com" style="color:inherit">nasaabandonedbutnotforgotten@gmail.com</a></p>
+    <p>Hackathon project, 2026</p>
+  </footer>
+
+  <script src="i18n.js"></script>
+  <!-- дані апаратів — для блоку «Цікаві факти» -->
+  <script src="moon-data.js"></script>
+  <script src="moon-extra.js"></script>
+  <script src="moon-flybys.js"></script>
+  <script src="moon-doc.js"></script>
+  <script src="moon-lo.js"></script>
+  <script src="moon-ranger.js"></script>
+  <script src="mars-data.js"></script>
+  <script src="mars-extra.js"></script>
+  <script src="mars-flybys.js"></script>
+  <script src="card-meta.js"></script>
+  <script src="data-uk.js"></script>
+  <script src="facts.js"></script>
+  <script src="planet-textures.js"></script>
+  <script src="script.js"></script>
+  <script src="transitions.js"></script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About us — Abandoned but Not Forgotten</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* ===== Стилі сторінки «Про нас» ===== */
+    .about { max-width: 980px; margin: 0 auto; padding: 130px 24px 80px; }
+
+    .about-hero { text-align: center; max-width: 800px; margin: 0 auto 60px; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 7px 16px; border-radius: 999px;
+      background: var(--cream); color: #1e1240;
+      font-size: 12px; font-weight: 700; letter-spacing: .12em;
+    }
+    .badge::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #1e1240; }
+    .about-hero h1 {
+      margin-top: 22px;
+      font-family: 'DM Serif Display', serif; font-weight: 400;
+      font-size: clamp(26px, 3.4vw, 40px); line-height: 1.3; color: #fff;
+    }
+    .team-label { margin-top: 30px; font-size: 13px; font-weight: 700; letter-spacing: .2em; color: var(--blue); }
+    .team { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 14px; }
+    .team span {
+      padding: 9px 16px; border-radius: 999px;
+      border: 1px solid rgba(255, 231, 194, .35);
+      background: rgba(255, 255, 255, .05);
+      font-size: 15px; font-weight: 600; color: #fff;
+    }
+
+    /* Картки «Місія» і «Мрія» */
+    .cards2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-bottom: 60px; }
+    .ccard {
+      background: var(--cream); color: #1e1240;
+      border-radius: 24px; padding: 32px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      transition: transform .25s;
+    }
+    .ccard:nth-child(2) { background: #f1e3c9; }
+    .ccard:hover { transform: translateY(-5px); }
+    .ccard h2 { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 34px; margin-bottom: 12px; }
+    .ccard p { font-size: 17px; line-height: 1.7; }
+    .ccard .foot {
+      margin-top: 24px; padding-top: 14px; border-top: 1px solid rgba(30, 18, 64, .15);
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+    }
+    .pill { padding: 5px 12px; border-radius: 999px; background: rgba(30, 18, 64, .08); letter-spacing: 0; text-transform: none; font-size: 13px; }
+
+    /* Текст про проєкт */
+    .story { max-width: 760px; margin: 0 auto 60px; }
+    .story .label { display: block; font-size: 13px; font-weight: 700; letter-spacing: .2em; color: var(--blue); margin-bottom: 10px; }
+    .story h2 { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: clamp(30px, 4vw, 44px); color: var(--cream); margin-bottom: 20px; }
+    .story p { font-size: 18px; line-height: 1.75; color: var(--text); margin-bottom: 16px; }
+    .story b { color: var(--cream); font-weight: 600; }
+
+    /* Блок про хакатон */
+    .hack {
+      background: var(--cream); color: #1e1240;
+      border-radius: 28px; padding: 40px;
+    }
+    .hack h2 { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: clamp(26px, 3vw, 36px); margin-bottom: 14px; }
+    .hack > p { font-size: 17px; line-height: 1.7; }
+    .reasons { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 24px 0; }
+    .reasons li {
+      display: flex; gap: 10px; align-items: flex-start;
+      background: #fff6e8; border: 1px solid rgba(30, 18, 64, .1);
+      border-radius: 14px; padding: 14px 16px;
+      font-size: 15px; line-height: 1.5; font-weight: 600;
+    }
+    .reasons li::before { content: "✦"; font-weight: 700; }
+    .hack .workflow { padding-top: 20px; border-top: 1px solid rgba(30, 18, 64, .15); }
+
+    @media (max-width: 760px) {
+      .about { padding-top: 140px; }
+      .cards2, .reasons { grid-template-columns: 1fr; }
+      .hack { padding: 26px; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="stars"></canvas>
+
+  <!-- ===== ВЕРХНЯ ПАНЕЛЬ ===== -->
+  <header class="topbar">
+    <a class="logo" href="index.html">Abandoned <em>but not</em> Forgotten</a>
+    <nav class="menu">
+      <a class="tab" href="index.html">Home</a>
+      <a class="tab" href="moon.html">Moon</a>
+      <a class="tab" href="mars.html">Mars</a>
+      <a class="tab" href="quiz.html">Quiz</a>
+      <a class="tab active" href="about.html">About us</a>
+    </nav>
+  </header>
+
+  <main class="about">
+
+    <!-- ===== ХТО МИ ===== -->
+    <section class="about-hero reveal">
+      <span class="badge">ISCIP · 3RD YEAR · RADIO ENGINEERING &amp; SPACE</span>
+      <h1>We are a team of six third-year cadets from the Institute of Special Communications and Information Protection of KPI (ISCIP), building a web platform about spacecraft that humanity left on the Moon and Mars.</h1>
+
+      <div class="team-label">TEAM MEMBERS</div>
+      <div class="team">
+        <span>Dayana Vasiukhno</span>
+        <span>Viktoriia Dashkel</span>
+        <span>Vitalii Aleksandrovych</span>
+        <span>Maksym Zinchuk</span>
+        <span>Denys Sobchuk</span>
+        <span>Oleksandr Korotkov</span>
+      </div>
+    </section>
+
+    <!-- ===== МІСІЯ І МРІЯ ===== -->
+    <section class="cards2 reveal">
+      <div class="ccard">
+        <div>
+          <h2>Our Mission</h2>
+          <p>To collect and share knowledge about spacecraft that have completed their missions, preserve their history, explain why they stopped working, and draw attention to the problem of human-made objects left in space.</p>
+        </div>
+        <div class="foot"><span>Space archive</span><span class="pill">🛰️ Spacecraft stories</span></div>
+      </div>
+      <div class="ccard">
+        <div>
+          <h2>Our Vision</h2>
+          <p>To create the best interactive guide to abandoned spacecraft for students, teachers, engineers and everyone fascinated by space exploration and radio communications.</p>
+        </div>
+        <div class="foot"><span>Education &amp; science</span><span class="pill">📡 Radio engineering</span></div>
+      </div>
+    </section>
+
+    <!-- ===== ПРО ПРОЄКТ ===== -->
+    <section class="story reveal">
+      <span class="label">ABOUT THE PROJECT</span>
+      <h2>Why we care about silent machines</h2>
+      <p>We are third-year cadets majoring in <b>Electronic Communications and Radio Engineering</b>. Every day we study radio communication systems, signal processing, antenna technology and telecommunication networks — the core technologies behind satellite links and deep space exploration.</p>
+      <p>When a spacecraft runs out of power, loses contact with Earth or finishes its mission, its story does not end. On our website we collect the stories of these machines on the Moon and Mars: where exactly they are, what they did, how they were built and why their missions ended.</p>
+    </section>
+
+    <!-- ===== ХАКАТОН ===== -->
+    <section class="hack reveal">
+      <h2>Why we joined the hackathon &amp; how we worked</h2>
+      <p>For our six-cadet team, this hackathon is an opportunity to step beyond the classroom, test ourselves under tight deadlines, connect with mentors and build real-world engineering skills.</p>
+
+      <ul class="reasons">
+        <li>Gain new practical skills beyond regular classroom studies</li>
+        <li>Test ourselves on real challenges under pressure and tight deadlines</li>
+        <li>Learn to work as a team and brainstorm ideas together</li>
+        <li>Connect with experienced engineers, mentors and like-minded peers</li>
+        <li>Step out of our comfort zone and grow professionally and personally</li>
+        <li>Become stronger, bolder and more confident in our abilities</li>
+      </ul>
+
+      <p class="workflow">We formed a team of <b>six people</b> (Dayana Vasiukhno, Viktoriia Dashkel, Vitalii Aleksandrovych, Maksym Zinchuk, Denys Sobchuk and Oleksandr Korotkov), defined the concept of the project together and divided responsibilities. Regular sync-ups, testing together and supporting each other helped us turn our idea into a working website.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="logo">Abandoned <em>but not</em> Forgotten</div>
+    <p>3rd-year cadets, ISCIP · Electronic Communications &amp; Radio Engineering · 2026</p>
+    <p>Data and photos: NASA · NASA JPL · LROC (NASA/ASU) · Mars map: Solar System Scope (CC BY 4.0)</p>
+    <p><span>Questions or corrections?</span> <a href="mailto:nasaabandonedbutnotforgotten@gmail.com" style="color:inherit">nasaabandonedbutnotforgotten@gmail.com</a></p>
+  </footer>
+
+  <script>
+    /* Поява блоків при прокрутці */
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible"); }), { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+
+    /* Зірки на фоні */
+    const sc = document.getElementById("stars"), sctx = sc.getContext("2d");
+    let stars = [];
+    function resizeStars() {
+      sc.width = innerWidth * devicePixelRatio; sc.height = innerHeight * devicePixelRatio;
+      stars = Array.from({ length: Math.round(innerWidth * innerHeight / 3500) }, () => ({
+        x: Math.random() * sc.width, y: Math.random() * sc.height,
+        r: (Math.random() < 0.05 ? 5 + Math.random() * 6 : 0.6 + Math.random() * 1.6) * devicePixelRatio,
+        p: Math.random() * 6.28, s: 0.5 + Math.random() * 1.5
+      }));
+    }
+    function drawStars(t) {
+      sctx.clearRect(0, 0, sc.width, sc.height);
+      sctx.fillStyle = "#fff4e0";
+      stars.forEach(s => {
+        sctx.globalAlpha = 0.35 + 0.65 * Math.abs(Math.sin(s.p + t / 1000 * s.s));
+        sctx.beginPath();
+        sctx.moveTo(s.x, s.y - s.r);
+        sctx.quadraticCurveTo(s.x, s.y, s.x + s.r, s.y);
+        sctx.quadraticCurveTo(s.x, s.y, s.x, s.y + s.r);
+        sctx.quadraticCurveTo(s.x, s.y, s.x - s.r, s.y);
+        sctx.quadraticCurveTo(s.x, s.y, s.x, s.y - s.r);
+        sctx.fill();
+      });
+      requestAnimationFrame(drawStars);
+    }
+    addEventListener("resize", resizeStars);
+    resizeStars();
+    requestAnimationFrame(drawStars);
+  </script>
+  <script src="i18n.js"></script>
+  <script src="transitions.js"></script>
+</body>
+</html>

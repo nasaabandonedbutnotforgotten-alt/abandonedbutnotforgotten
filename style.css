@@ -1,0 +1,274 @@
+/* ===== КОЛЬОРИ ===== */
+:root {
+  --cream: #ffe7c2;
+  --blue:  #7fa6e0;
+  --text:  rgba(255, 255, 255, .82);
+  --line:  rgba(255, 231, 194, .15);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  /* космос: зверху майже чорний, донизу фіолетовий */
+  background: linear-gradient(180deg, #05030f 0%, #140630 45%, #2c0a71 100%) fixed;
+  color: #fff;
+  font-family: 'Manrope', sans-serif;
+  overflow-x: hidden;
+}
+
+#stars {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+main, .footer { position: relative; z-index: 1; }
+
+/* ===== ВЕРХНЯ ПАНЕЛЬ ===== */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 10;
+  height: 84px;
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  background: rgba(5, 3, 15, .55);
+  backdrop-filter: blur(8px);
+}
+.logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px;
+  color: var(--cream);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.logo em { opacity: .65; }
+.menu { display: flex; gap: 8px; }
+.tab {
+  color: rgba(255, 255, 255, .7);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 14px;
+  border-bottom: 2px solid transparent;
+  transition: color .2s, border-color .2s;
+}
+.tab:hover { color: #fff; }
+.tab.active { color: var(--cream); border-bottom-color: var(--cream); }
+
+/* ===== ПЕРШИЙ ЕКРАН ===== */
+.hero {
+  min-height: 100vh;
+  padding: 110px 20px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.solar {
+  position: relative;
+  width: min(92vw, 1100px);
+  aspect-ratio: 2.4 / 1;
+}
+.solar canvas { position: absolute; inset: 0; display: block; }
+
+.hero-text { text-align: center; margin-top: 10px; }
+.hero-text h1 {
+  font-family: 'DM Serif Display', serif;
+  font-weight: 400;
+  font-size: clamp(34px, 5vw, 64px);
+  color: var(--cream);
+  line-height: 1.1;
+}
+.subtitle {
+  margin-top: 12px;
+  font-size: clamp(16px, 1.6vw, 20px);
+  color: var(--text);
+}
+
+/* Кнопки */
+.cta { margin-top: 30px; display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.btn {
+  display: inline-block;
+  padding: 14px 30px;
+  border-radius: 999px;
+  background: var(--cream);
+  color: #1e1240;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: .04em;
+  transition: transform .2s, box-shadow .2s, background .2s;
+}
+.btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(255, 231, 194, .25); }
+.btn.outline { background: transparent; color: var(--cream); border: 1.5px solid var(--cream); }
+.btn.outline:hover { background: rgba(255, 231, 194, .1); }
+
+/* Підказка над планетами */
+.tooltip {
+  position: fixed;
+  z-index: 20;
+  display: none;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--cream);
+  color: #1e1240;
+  font-weight: 700;
+  font-size: 14px;
+  pointer-events: none;
+  transform: translate(-50%, -150%);
+  white-space: nowrap;
+}
+
+/* ===== ТЕКСТОВІ БЛОКИ ===== */
+.block {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 90px 24px;
+  border-top: 1px solid var(--line);
+}
+.block.wide { max-width: 1000px; }
+.label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .2em;
+  color: var(--blue);
+  margin-bottom: 10px;
+}
+.block h2 {
+  font-family: 'DM Serif Display', serif;
+  font-weight: 400;
+  font-size: clamp(30px, 4vw, 46px);
+  color: var(--cream);
+  margin-bottom: 22px;
+}
+.block p {
+  font-size: 18px;
+  line-height: 1.75;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+.block .lead { font-size: 22px; color: #fff; font-weight: 600; }
+.block .accent {
+  color: var(--cream);
+  font-weight: 600;
+  border-left: 3px solid var(--cream);
+  padding-left: 16px;
+  margin-top: 24px;
+}
+.big-quote {
+  margin-top: 30px;
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(30px, 4.5vw, 52px) !important;
+  line-height: 1.2 !important;
+  color: #fff !important;
+}
+.big-quote span { color: var(--cream); font-style: italic; }
+
+/* Кроки «Як це працює» */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 10px;
+}
+.step {
+  padding: 28px 24px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .04);
+  transition: transform .25s, border-color .25s;
+}
+.step:hover { transform: translateY(-5px); border-color: rgba(255, 231, 194, .5); }
+.num {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--cream);
+  color: #1e1240;
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+.step h3 { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 24px; color: var(--cream); margin-bottom: 8px; }
+.step p { font-size: 16px; margin: 0; }
+
+.block.final { text-align: center; padding-bottom: 120px; }
+.block.final .accent { border: none; padding: 0; font-size: 22px; }
+
+/* ===== ПІДВАЛ ===== */
+.footer {
+  text-align: center;
+  padding: 40px 24px 50px;
+  border-top: 1px solid var(--line);
+  background: rgba(5, 3, 15, .4);
+}
+.footer p { font-size: 13px; color: rgba(255, 255, 255, .55); margin-top: 8px; }
+
+/* ===== Поява блоків при прокрутці ===== */
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity .8s ease, transform .8s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ===== ТЕЛЕФОН ===== */
+@media (max-width: 760px) {
+  .topbar { height: auto; padding: 12px 16px; flex-direction: column; gap: 6px; }
+  .logo { font-size: 18px; }
+  .menu { gap: 0; }
+  .tab { font-size: 11px; padding: 8px 8px; letter-spacing: .08em; }
+  .hero { padding-top: 120px; min-height: 0; }
+  .solar { aspect-ratio: 1.7 / 1; }
+  .steps { grid-template-columns: 1fr; }
+  .block { padding: 60px 20px; }
+  .block p { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ===== Плавні переходи між сторінками ===== */
+main, .footer { animation: pageIn .7s cubic-bezier(.2, .7, .2, 1) both; }
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(18px); filter: blur(4px); }
+  to   { opacity: 1; transform: none; filter: none; }
+}
+body.leaving main, body.leaving .footer {
+  opacity: 0; transform: translateY(-12px); filter: blur(4px);
+  transition: opacity .32s ease, transform .32s ease, filter .32s ease;
+}
+.tab { transition: color .3s, border-color .3s; }
+@media (prefers-reduced-motion: reduce) {
+  main, .footer { animation: none; }
+  body.leaving main, body.leaving .footer { transition: none; }
+}
+
+/* Перемикач мови */
+.lang-btn { margin-left: 10px; padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(255, 231, 194, .35); background: transparent; color: rgba(255, 255, 255, .55); font: 600 12px Manrope, sans-serif; letter-spacing: .06em; cursor: pointer; align-self: center; }
+.lang-btn b { color: #ffe7c2; }
+.lang-btn:hover { border-color: #ffe7c2; }
+@media (max-width: 760px) { .menu { flex-wrap: wrap; justify-content: center; } .lang-btn { margin-left: 4px; padding: 4px 10px; font-size: 11px; } }
+
+/* ===== Цікаві факти (головна) ===== */
+.ff-total { margin: 6px 0 22px; font-size: 16px; color: rgba(255, 255, 255, .75); }
+.ff-total b { color: var(--cream); }
+.ff-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.ff { padding: 22px; border-radius: 20px; background: rgba(20, 12, 50, .6); border: 1px solid rgba(255, 231, 194, .18); display: flex; flex-direction: column; }
+.ff-top { display: flex; align-items: center; gap: 10px; }
+.ff-ico { font-size: 22px; }
+.ff-k { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #8fb4ff; }
+.ff-big { font-family: 'DM Serif Display', serif; font-size: 44px; line-height: 1.1; color: var(--cream); margin: 10px 0 6px; }
+.ff p { font-size: 15px; line-height: 1.6; color: rgba(255, 255, 255, .8); margin: 0; }
+.ff a { color: var(--cream); }
+.ff-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.ff-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(110, 231, 160, .35); font-size: 13px; font-weight: 600; text-decoration: none; color: #fff !important; }
+.ff-chip i { width: 7px; height: 7px; border-radius: 50%; background: #6ee7a0; box-shadow: 0 0 6px #6ee7a0; }
+.ff-chip:hover { background: rgba(110, 231, 160, .12); }
+.ff-note { display: block; margin-top: 10px; font-size: 13px; color: rgba(255, 255, 255, .6); }
+@media (max-width: 900px) { .ff-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .ff-grid { grid-template-columns: 1fr; } }

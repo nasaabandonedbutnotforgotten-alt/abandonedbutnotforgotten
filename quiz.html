@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quiz — Abandoned but Not Forgotten</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .quiz { max-width: 760px; margin: 0 auto; padding: 130px 24px 100px; min-height: 70vh; }
+    .quiz h1 { font-family: "DM Serif Display", serif; font-weight: 400; font-size: clamp(36px, 6vw, 56px); color: var(--cream); margin: 10px 0 14px; }
+    .quiz .intro { color: rgba(255,255,255,.75); font-size: 17px; line-height: 1.6; margin-bottom: 28px; }
+    .q-card { background: rgba(20, 12, 50, .65); border: 1px solid rgba(255,231,194,.2); border-radius: 22px; padding: 30px; backdrop-filter: blur(6px); }
+    .q-top { display: flex; justify-content: space-between; align-items: center; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,231,194,.7); }
+    .q-bar { height: 4px; background: rgba(255,255,255,.1); border-radius: 4px; margin: 12px 0 22px; overflow: hidden; }
+    .q-bar i { display: block; height: 100%; background: var(--cream); transition: width .4s; }
+    .q-text { font-size: 22px; font-weight: 700; color: #fff; line-height: 1.4; margin-bottom: 20px; }
+    .q-opts { display: grid; gap: 10px; }
+    .q-opts button { text-align: left; padding: 14px 18px; border-radius: 14px; border: 1px solid rgba(255,231,194,.25); background: rgba(255,255,255,.04); color: #fff; font: 600 16px Manrope, sans-serif; cursor: pointer; transition: background .2s, border-color .2s; }
+    .q-opts button:hover:not(:disabled) { background: rgba(255,231,194,.1); border-color: var(--cream); }
+    .q-opts button.right { background: rgba(110,231,160,.18); border-color: #6ee7a0; }
+    .q-opts button.wrong { background: rgba(255,120,120,.15); border-color: #ff8a8a; }
+    .q-opts button:disabled { cursor: default; }
+    .q-feedback { margin-top: 18px; font-size: 15px; line-height: 1.6; color: rgba(255,255,255,.85); }
+    .q-feedback b { color: var(--cream); }
+    .q-feedback a { color: var(--cream); }
+    .q-next { margin-top: 20px; }
+    .score { text-align: center; }
+    .score .big { font-family: "DM Serif Display", serif; font-size: 80px; color: var(--cream); line-height: 1; margin: 10px 0; }
+    .q-sub { display: block; margin-top: 8px; font-weight: 500; font-size: 17px; color: rgba(255,255,255,.8); }
+    /* вибір рівня */
+    .q-pick { font-size: 15px; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,231,194,.75); margin-bottom: 14px; font-weight: 700; }
+    .levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .level { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; text-align: left; padding: 18px; border-radius: 18px; border: 1px solid rgba(255,231,194,.25); background: rgba(255,255,255,.04); color: #fff; font: inherit; cursor: pointer; transition: background .2s, border-color .2s, transform .2s; }
+    .level:hover { background: rgba(255,231,194,.1); border-color: var(--cream); transform: translateY(-3px); }
+    .lv-ico { font-size: 28px; }
+    .lv-t { font-family: "DM Serif Display", serif; font-size: 26px; color: var(--cream); }
+    .lv-d { font-size: 14px; line-height: 1.5; color: rgba(255,255,255,.75); }
+    .lv-best { margin-top: 4px; font-size: 12px; font-weight: 700; color: #6ee7a0; }
+    @media (max-width: 640px) { .levels { grid-template-columns: 1fr; } }
+    /* пояснення */
+    .q-verdict { font-weight: 700; font-size: 17px; }
+    .q-verdict.ok { color: #6ee7a0; }
+    .q-verdict.no { color: #ff9c9c; }
+    .q-verdict b { color: #fff; }
+    .q-why { margin-top: 10px; padding: 12px 14px; border-radius: 14px; background: rgba(255,231,194,.07); border-left: 3px solid var(--cream); }
+    .q-why-l { display: block; font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--cream); margin-bottom: 4px; }
+    .q-more { margin-top: 10px; font-size: 14px; color: rgba(255,255,255,.65); }
+    /* підсумок */
+    .stars { font-size: 34px; color: #ffb02e; letter-spacing: 6px; }
+    .stars span { color: rgba(255,255,255,.15); }
+    .score .intro b { color: var(--cream); }
+    .score-btns { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .review-h { font-family: "DM Serif Display", serif; font-weight: 400; font-size: 28px; color: var(--cream); margin: 34px 0 12px; }
+    .review { list-style: none; display: grid; gap: 10px; padding: 0; }
+    .review li { display: flex; gap: 12px; padding: 14px; border-radius: 14px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); }
+    .rv-m { flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 14px; }
+    .review li.ok .rv-m { background: rgba(110,231,160,.18); color: #6ee7a0; }
+    .review li.no .rv-m { background: rgba(255,120,120,.15); color: #ff9c9c; }
+    .rv-q { font-weight: 700; color: #fff; font-size: 15px; line-height: 1.4; }
+    .rv-a { margin-top: 4px; font-size: 14px; color: rgba(255,255,255,.8); }
+    .rv-a b { color: #6ee7a0; }
+    .rv-a s { color: #ff9c9c; }
+    .rv-why { margin-top: 4px; font-size: 13px; color: rgba(255,255,255,.6); line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+
+  <header class="topbar">
+    <a class="logo" href="index.html">Abandoned <em>but not</em> Forgotten</a>
+    <nav class="menu">
+      <a class="tab" href="index.html">Home</a>
+      <a class="tab" href="moon.html">Moon</a>
+      <a class="tab" href="mars.html">Mars</a>
+      <a class="tab active" href="quiz.html">Quiz</a>
+      <a class="tab" href="about.html">About us</a>
+    </nav>
+  </header>
+
+  <main class="quiz">
+    <span class="label">QUIZ</span>
+    <h1>How well do you know them?</h1>
+    <p class="intro">Questions about the spacecraft on our Moon and Mars maps, at three levels. After each answer you will see why it is right. All answers come from NASA data on this website.</p>
+    <div class="q-card" id="qcard">
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="logo">Abandoned <em>but not</em> Forgotten</div>
+    <p>Data: NASA · NASA NSSDC · NASA JPL · LROC (NASA/GSFC/ASU)</p>
+  </footer>
+
+  <script src="i18n.js"></script>
+  <!-- дані апаратів (ті самі, що й на картах) -->
+  <script src="mars-data.js"></script>
+  <script src="mars-extra.js"></script>
+  <script src="moon-data.js"></script>
+  <script src="moon-extra.js"></script>
+  <script src="card-meta.js"></script>
+  <script src="data-uk.js"></script>
+  <script src="quiz.js"></script>
+  <script>
+    /* Поява блоків при прокрутці */
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible"); }), { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+
+    /* Зірки на фоні */
+    const sc = document.getElementById("stars"), sctx = sc.getContext("2d");
+    let stars = [];
+    function resizeStars() {
+      sc.width = innerWidth * devicePixelRatio; sc.height = innerHeight * devicePixelRatio;
+      stars = Array.from({ length: Math.round(innerWidth * innerHeight / 3500) }, () => ({
+        x: Math.random() * sc.width, y: Math.random() * sc.height,
+        r: (Math.random() < 0.05 ? 5 + Math.random() * 6 : 0.6 + Math.random() * 1.6) * devicePixelRatio,
+        p: Math.random() * 6.28, s: 0.5 + Math.random() * 1.5
+      }));
+    }
+    function drawStars(t) {
+      sctx.clearRect(0, 0, sc.width, sc.height);
+      sctx.fillStyle = "#fff4e0";
+      stars.forEach(s => {
+        sctx.globalAlpha = 0.35 + 0.65 * Math.abs(Math.sin(s.p + t / 1000 * s.s));
+        sctx.beginPath();
+        sctx.moveTo(s.x, s.y - s.r);
+        sctx.quadraticCurveTo(s.x, s.y, s.x + s.r, s.y);
+        sctx.quadraticCurveTo(s.x, s.y, s.x, s.y + s.r);
+        sctx.quadraticCurveTo(s.x, s.y, s.x - s.r, s.y);
+        sctx.quadraticCurveTo(s.x, s.y, s.x, s.y - s.r);
+        sctx.fill();
+      });
+      requestAnimationFrame(drawStars);
+    }
+    addEventListener("resize", resizeStars);
+    resizeStars();
+    requestAnimationFrame(drawStars);
+  </script>
+
+  <script src="transitions.js"></script>
+</body>
+</html>

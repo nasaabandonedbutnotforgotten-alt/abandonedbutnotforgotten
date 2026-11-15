@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>
+/* Режим вбудовування: ?embed=mini (мітка на планеті) або ?embed=card (у картці сайту) */
+window.EMBED=new URLSearchParams(location.search).get('embed');
+if(window.EMBED)document.documentElement.classList.add('embed','embed-'+window.EMBED);
+</script>
+<style>
+.embed .panel{display:none}
+.embed .wrap{min-height:0}
+.embed .stage{height:100vh;min-height:0}
+html.embed-mini,.embed-mini body{background:transparent!important;overflow:hidden}
+.embed-mini .stage{background:transparent!important;cursor:default}
+.embed-mini .scene{left:50%!important;top:60%!important}
+.embed-mini .overlay,.embed-mini .hint,.embed-mini .shadow,.embed-mini .status{display:none!important}
+.embed-card .hint{font-size:11px;left:8px;bottom:8px}
+.embed-card .label span{font-size:11px;padding:3px 6px}
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LADEE — 3D model</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#0B1026;color:#E6EAF5;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{display:flex;flex-wrap:wrap;min-height:100%}
+.stage{flex:999 1 560px;min-width:0;position:relative;height:100vh;min-height:520px;overflow:hidden;cursor:grab;touch-action:none;
+ background:
+  radial-gradient(1.5px 1.5px at 8% 12%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 22% 70%,#fff 50%,transparent 51%),
+  radial-gradient(1.5px 1.5px at 35% 30%,#dfe8ff 50%,transparent 51%),radial-gradient(1px 1px at 48% 88%,#fff 50%,transparent 51%),
+  radial-gradient(2px 2px at 63% 18%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 74% 55%,#fff 50%,transparent 51%),
+  radial-gradient(1.5px 1.5px at 86% 80%,#ffe9c9 50%,transparent 51%),radial-gradient(1px 1px at 93% 34%,#fff 50%,transparent 51%),
+  radial-gradient(1px 1px at 14% 44%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 57% 64%,#cfe0ff 50%,transparent 51%),
+  radial-gradient(ellipse 70% 60% at 70% 20%,rgba(70,60,140,.35),transparent 70%),
+  linear-gradient(180deg,#05071a 0%,#0b0f2c 60%,#120c2e 100%)}
+.stage:active{cursor:grabbing}
+.viewport{position:absolute;inset:0;perspective:1800px;perspective-origin:50% 40%}
+.scene{position:absolute;left:50%;top:52%;width:0;height:0;transform-style:preserve-3d}
+.obj{position:absolute;left:0;top:0;transform-style:preserve-3d}
+.f{position:absolute;left:0;top:0;backface-visibility:hidden;outline:1px solid rgba(0,0,0,.14)}
+.f2{position:absolute;left:0;top:0}
+
+.anchor{position:absolute;left:0;top:0;width:1px;height:1px}
+.overlay{position:absolute;inset:0;pointer-events:none}
+.label{position:absolute;left:0;top:0;pointer-events:none}
+.label span{position:absolute;left:8px;top:-12px;white-space:nowrap;font-size:13px;font-weight:600;background:rgba(11,16,38,.88);border:1px solid #2A3A6E;color:#fff;padding:4px 8px;border-radius:8px}
+.label i{position:absolute;left:-5px;top:-5px;width:10px;height:10px;border-radius:50%;background:#FF8A50;box-shadow:0 0 0 3px rgba(255,138,80,.3)}
+.hide-labels .label{display:none}
+.label.minor{display:none}.label.minor.show{display:block}
+.scene .hl .f,.scene .hl .f2{outline:2px solid #FF8A50;filter:brightness(1.3)!important}
+.panel{flex:1 1 300px;padding:28px 24px;border-left:1px solid #1E2A52;background:#0E1532;overflow:auto;max-height:100vh}
+h1{margin:0 0 6px;font-size:22px;line-height:1.25}
+.sub{margin:0 0 20px;color:#B8C2DC;font-size:14px;line-height:1.5}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+button{font:inherit;font-size:14px;font-weight:600;color:#fff;background:#1B2550;border:1px solid #2A3A6E;border-radius:10px;padding:10px 14px;min-height:44px;cursor:pointer}
+button:hover{background:#24306a}
+button[aria-pressed="true"]{background:#FF8A50;border-color:#FF8A50;color:#1a0e06}
+ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+ol li button{width:100%;text-align:left;display:flex;flex-direction:column;gap:2px;background:#10183A;font-weight:500}
+ol li b{font-size:15px;color:#fff}
+ol li small{color:#A8B2CC;font-size:12px;line-height:1.4}
+.hint{position:absolute;left:16px;bottom:14px;font-size:13px;color:#E6EAF5;background:rgba(11,16,38,.75);padding:6px 10px;border-radius:8px;pointer-events:none}
+.note{margin-top:20px;font-size:12px;line-height:1.5;color:#A8B2CC}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="stage" id="stage" aria-label="3D model of LADEE. Drag to rotate">
+  <div class="viewport"><div class="scene" id="scene"></div></div>
+  <div class="overlay" id="overlay"></div>
+  <div class="hint">Drag to rotate · scroll or pinch to zoom</div>
+ </div>
+ <aside class="panel">
+  <h1>LADEE</h1>
+  <p class="sub">NASA Ames, 2013–2014 — studied the Moon’s thin exosphere and dust. 3D model based on NASA images. Hover over a part in the list to highlight it.</p>
+  <div class="btns">
+   <button id="bLabels" aria-pressed="true">Labels</button>
+   <button id="bSpin" aria-pressed="false">Auto-rotate</button>
+   <button id="bView">View as in the diagram</button>
+  </div>
+  <ol id="legend"></ol>
+  <p class="note">Its laser terminal set a record for data speed from the Moon. At the end it was flown into the far side on purpose. The model is schematic; proportions are approximate.</p>
+ </aside>
+</div>
+<script>
+(function(){
+const scene=document.getElementById('scene');
+const groups={};const bbs=[];
+function shade(hex,k){const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;r=Math.min(255,r*k|0);g=Math.min(255,g*k|0);b=Math.min(255,b*k|0);return `rgb(${r},${g},${b})`}
+function grp(id){if(!groups[id]){const g=document.createElement('div');g.className='obj';g.dataset.part=id;scene.appendChild(g);groups[id]=g}return groups[id]}
+function wrap(parent,t){const o=document.createElement('div');o.className='obj';o.style.transform=t;parent.appendChild(o);return o}
+function box(parent,x,y,z,w,h,d,color,bg){
+ bg=bg||{};const o=document.createElement('div');o.className='obj';
+ o.style.transform=`translate3d(${x+w/2}px,${-(y+h/2)}px,${z+d/2}px)`;
+ const faces=[[w,h,`translateZ(${d/2}px)`,0.85],[w,h,`rotateY(180deg) translateZ(${d/2}px)`,0.55],
+  [d,h,`rotateY(90deg) translateZ(${w/2}px)`,0.98],[d,h,`rotateY(-90deg) translateZ(${w/2}px)`,0.5],
+  [w,d,`rotateX(90deg) translateZ(${h/2}px)`,1.05],[w,d,`rotateX(-90deg) translateZ(${h/2}px)`,0.32]];
+ faces.forEach((f,i)=>{const e=document.createElement('div');e.className='f';e.style.width=f[0]+'px';e.style.height=f[1]+'px';
+  e.style.marginLeft=(-f[0]/2)+'px';e.style.marginTop=(-f[1]/2)+'px';e.style.transform=f[2];e.style.background=bg[i]||shade(color,f[3]);o.appendChild(e)});
+ parent.appendChild(o);return o;
+}
+function rod(parent,p,q,t,color){
+ const dx=q[0]-p[0],dy=-(q[1]-p[1]),dz=q[2]-p[2];const L=Math.hypot(dx,dy,dz);
+ const b=Math.asin(dy/L)*180/Math.PI,a=Math.atan2(-dz,dx)*180/Math.PI;
+ const o=wrap(parent,`translate3d(${(p[0]+q[0])/2}px,${-(p[1]+q[1])/2}px,${(p[2]+q[2])/2}px) rotateY(${a}deg) rotateZ(${b}deg)`);
+ box(o,-L/2,-t/2,-t/2,L,t,t,color);return o;
+}
+function sphere(parent,x,y,z,r,c1,c2){
+ const e=document.createElement('div');e.className='f2';
+ e.style.cssText+=`width:${2*r}px;height:${2*r}px;margin-left:${-r}px;margin-top:${-r}px;border-radius:50%;background:radial-gradient(circle at 62% 35%,#fff 0 5%,${c1} 22%,${c2} 100%)`;
+ const o=wrap(parent,`translate3d(${x}px,${-y}px,${z}px)`);o.appendChild(e);bbs.push(e);return o;
+}
+function cyl(parent,x,y,z,r,h,color,N,cap,pre){
+ N=N||14;const o=wrap(parent,`translate3d(${x}px,${-y}px,${z}px) ${pre||''}`);const chord=2*r*Math.sin(Math.PI/N)+1;
+ for(let i=0;i<N;i++){const a=360/N*i;const e=document.createElement('div');e.className='f2';
+  e.style.cssText+=`width:${chord}px;height:${h}px;margin-left:${-chord/2}px;margin-top:${-h/2}px;background:${shade(color,0.55+0.5*Math.max(0,Math.cos((a-40)*Math.PI/180)))};transform:rotateY(${a}deg) translateZ(${r}px)`;o.appendChild(e)}
+ [h/2,-h/2].forEach((yy,k)=>{const d=document.createElement('div');d.className='f2';d.style.cssText+=`width:${2*r}px;height:${2*r}px;margin-left:${-r}px;margin-top:${-r}px;border-radius:50%;background:${k===0&&cap?cap:shade(color,k?0.4:1.0)};transform:translateY(${-yy}px) rotateX(90deg)`;o.appendChild(d)});
+ return o;
+}
+const pol=(r,deg,y)=>[r*Math.cos(deg*Math.PI/180),y,r*Math.sin(deg*Math.PI/180)];
+
+
+function plate(parent,t,w,h,bg,css){const o=wrap(parent,t);const e=document.createElement('div');e.className='f2';e.style.cssText+=`width:${w}px;height:${h}px;margin-left:${-w/2}px;margin-top:${-h/2}px;background:${bg};${css||''}`;o.appendChild(e);return o}
+function dish(parent,t,R1,DH,rgb,R0){R0=R0||R1*0.15;const g=wrap(parent,t);const NS=24;
+ for(let i=0;i<NS;i++){const ang=360/NS*i,slant=Math.hypot(R1-R0,DH),tilt=Math.atan2(DH,R1-R0)*180/Math.PI;
+  const wTop=2*R1*Math.tan(Math.PI/NS)+1,wBot=2*R0*Math.tan(Math.PI/NS)+1;
+  const seg=wrap(g,`rotateY(${ang}deg) translateZ(${(R0+R1)/2}px) translateY(${-DH/2}px) rotateX(${-(90-tilt)}deg)`);
+  const e=document.createElement('div');e.className='f2';const k=0.6+0.4*Math.max(0,Math.cos((ang-200)*Math.PI/180)),c=v=>Math.round(v*k);
+  e.style.cssText+=`width:${wTop}px;height:${slant}px;margin-left:${-wTop/2}px;margin-top:${-slant/2}px;clip-path:polygon(0 0,100% 0,${50+50*wBot/wTop}% 100%,${50-50*wBot/wTop}% 100%);background:rgb(${c(rgb[0])},${c(rgb[1])},${c(rgb[2])})`;seg.appendChild(e)}
+ cyl(g,0,0,0,R0,2,'#999999',12);return g}
+const GOLDF='linear-gradient(135deg,#f6d27a,#b8862b 35%,#f0c66a 55%,#9c6c1c 80%,#e7bc5c)';
+const CELLS=(c1,c2)=>`repeating-linear-gradient(90deg,rgba(210,220,240,.35) 0 1px,transparent 1px 12px),repeating-linear-gradient(0deg,rgba(210,220,240,.3) 0 1px,transparent 1px 12px),linear-gradient(135deg,${c1},${c2})`;
+
+function cone(parent,t,R0,R1,H,colFn,NS){NS=NS||28;const g=wrap(parent,t);const s=Math.hypot(R1-R0,H),a=Math.asin((R1-R0)/s)*180/Math.PI;
+ const wB=2*R1*Math.tan(Math.PI/NS)+1.5,wT=2*R0*Math.tan(Math.PI/NS)+1.5;
+ for(let i=0;i<NS;i++){const ang=360/NS*i;const seg=wrap(g,`rotateY(${ang}deg) translateZ(${(R0+R1)/2}px) rotateX(${a}deg)`);
+  const e=document.createElement('div');e.className='f2';const k=0.55+0.5*Math.max(0,Math.cos((ang-40)*Math.PI/180));
+  e.style.cssText+=`width:${wB}px;height:${s}px;margin-left:${-wB/2}px;margin-top:${-s/2}px;clip-path:polygon(${50-50*wT/wB}% 0,${50+50*wT/wB}% 0,100% 100%,0 100%);background:${shade(colFn(i),k)}`;seg.appendChild(e)}
+ return g}
+
+const PARTS=[
+ ['body','Hexagonal body','Modular “common bus”, 1.85 × 1.85 × 2.37 m'],
+ ['solar','Solar panels','Panels on all sides — 295 W of power'],
+ ['ldex','Dust detector (LDEX)','Counted dust grains above the surface'],
+ ['nms','Neutral mass spectrometer','Measured the gases of the exosphere'],
+ ['uvs','UV/visible spectrometer','Looked at light from the exosphere'],
+ ['llcd','Laser comm terminal (LLCD)','Set the record for data speed from the Moon'],
+ ['eng','Engine','Main engine for orbit changes']
+];
+const BD=grp('body');cyl(BD,0,0,0,80,170,'#14214a',6,'#d8dade');
+const SO=grp('solar');[0,60,120,180,240,300].forEach(a=>plate(SO,`rotateY(${-(a+30)}deg) translateZ(70px)`,72,150,CELLS('#14214a','#2b4590')));
+const LD=grp('ldex');box(LD,-20,86,-50,40,20,30,'#d9b04a');
+const NM=grp('nms');cyl(NM,30,100,10,12,40,'#e6e6e6',12,'#222222');
+const UV=grp('uvs');box(UV,-40,86,10,24,24,24,'#9da0a8');
+const LL=grp('llcd');cyl(LL,0,-60,82,14,10,'#cccccc',14,'radial-gradient(circle,#6ad 0 50%,#444 51%)','rotateX(90deg)');
+const EN=grp('eng');cone(EN,'translate3d(0,100px,0) rotateX(180deg)',10,22,24,i=>'#555555');
+const LP={body:pol(80,200,40),solar:pol(80,270,-40),ldex:[0,106,-50],nms:[30,124,10],uvs:[-40,112,10],llcd:[0,-60,90],eng:[0,-110,0]};
+const MAJOR=['body','solar','ldex','nms','llcd'];
+const ov=document.getElementById('overlay');const labels=[];
+const LBL={};
+PARTS.forEach(([id,name])=>{const a=document.createElement('div');a.className='anchor';const p=LP[id];a.style.transform=`translate3d(${p[0]}px,${-p[1]}px,${p[2]}px)`;scene.appendChild(a);
+ const l=document.createElement('div');l.className='label'+(MAJOR.includes(id)?'':' minor');l.innerHTML=`<i></i><span>${name}</span>`;ov.appendChild(l);labels.push([l,a]);LBL[id]=l});
+const lg=document.getElementById('legend');
+PARTS.forEach(([id,name,en])=>{const li=document.createElement('li');const b=document.createElement('button');b.innerHTML=`<b>${name}</b><small>${en}</small>`;
+ const on=()=>{groups[id].classList.add('hl');LBL[id].classList.add('show')},off=()=>{groups[id].classList.remove('hl');LBL[id].classList.remove('show')};
+ b.addEventListener('mouseenter',on);b.addEventListener('mouseleave',off);b.addEventListener('focus',on);b.addEventListener('blur',off);li.appendChild(b);lg.appendChild(li)});
+// ----- View
+const VIEW={rx:-14,ry:-30};
+let rx=VIEW.rx,ry=VIEW.ry,zoom=1,spin=window.EMBED==='mini';
+function render(){
+ scene.style.transform=`scale(${zoom}) rotateX(${rx}deg) rotateY(${ry}deg)`;
+ const bt=`rotateY(${-ry}deg) rotateX(${-rx}deg)`;bbs.forEach(e=>e.style.transform=bt);
+ const sr=ov.getBoundingClientRect();
+ labels.forEach(([l,a])=>{const r=a.getBoundingClientRect();l.style.transform=`translate(${r.left-sr.left}px,${r.top-sr.top}px)`});
+}
+const st=document.getElementById('stage');
+function fit(){const k=Math.min(st.clientWidth/820,st.clientHeight/660);zoom=window.EMBED?k*0.95:Math.max(.45,Math.min(1.5,k))}
+fit();render();window.addEventListener('resize',()=>{fit();render()});
+let drag=null;const pts=new Map();
+st.addEventListener('pointerdown',e=>{st.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);drag={x:e.clientX,y:e.clientY,rx,ry}});
+st.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,[e.clientX,e.clientY]);
+ if(pts.size===2){const [a,b]=[...pts.values()];const d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(drag.pd)zoom=Math.max(.35,Math.min(3,zoom*d/drag.pd));drag.pd=d;render();return}
+ ry=drag.ry+(e.clientX-drag.x)*0.4;rx=Math.max(-85,Math.min(10,drag.rx-(e.clientY-drag.y)*0.3));render()});
+const up2=e=>{pts.delete(e.pointerId);if(pts.size===0)drag=null;else{const [a]=[...pts.values()];drag={x:a[0],y:a[1],rx,ry}}};
+st.addEventListener('pointerup',up2);st.addEventListener('pointercancel',up2);
+st.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.35,Math.min(3,zoom*(e.deltaY<0?1.08:0.93)));render()},{passive:false});
+function tick(){if(spin&&!drag){ry+=0.15;render()}requestAnimationFrame(tick)}tick();
+const tg=(b,v)=>b.setAttribute('aria-pressed',String(v));
+const bl=document.getElementById('bLabels');bl.onclick=()=>{const v=bl.getAttribute('aria-pressed')!=='true';tg(bl,v);st.classList.toggle('hide-labels',!v)};
+const bs=document.getElementById('bSpin');bs.onclick=()=>{spin=!spin;tg(bs,spin)};
+document.getElementById('bView').onclick=()=>{rx=VIEW.rx;ry=VIEW.ry;spin=false;tg(bs,false);fit();render()};
+// на планеті: кут огляду задає сайт
+if(window.EMBED==='mini'){spin=false;window.addEventListener('message',e=>{const d=e.data||{};if(d.type==='pose'){rx=d.rx;if(d.ry!==undefined)ry=d.ry;render()}})}
+})();
+</script>
+<script src="models-uk.js"></script>
+</body>
+</html>
