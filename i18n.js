@@ -45,6 +45,7 @@ const UA = {
   "We believe they should be remembered and protected, not forgotten.": "Ми віримо, що їх треба пам'ятати й берегти, а не забувати.",
   "Start exploring": "Почати дослідження",
   "Hackathon project, 2026": "Проєкт для хакатону, 2026",
+  "Made with the help of AI assistants: Claude (Anthropic), Gemini (Google) and Grok (xAI). All facts are checked against NASA and other primary sources.": "Створено за допомогою ШІ-асистентів: Claude (Anthropic), Gemini (Google) і Grok (xAI). Усі факти перевірено за джерелами NASA та іншими першоджерелами.",
 
   /* --- сторінки планет --- */
   "🖱 Drag to spin · scroll or pinch to zoom · click a spacecraft": "🖱 Тягни, щоб крутити · коліщатко або два пальці — наблизити · натисни на апарат",

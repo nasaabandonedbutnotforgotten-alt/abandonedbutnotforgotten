@@ -52,6 +52,12 @@ NASA · NASA Science · NASA JPL · NASA NSSDC · LROC (NASA/GSFC/ASU).
 Карта Місяця — NASA CGI Moon Kit (LROC). Карта Марса — Solar System Scope (CC BY 4.0) за даними NASA.
 Посилання на першоджерела є в картці кожного апарата.
 
+### Використання ШІ
+Під час розробки ми використовували ШІ-асистентів: **Claude** (Anthropic) — код, 3D-моделі, переклад; **Gemini** (Google) і **Grok** (xAI) — пошук інформації, ідеї, перевірка текстів. Усі факти перевірено за першоджерелами — переважно NASA; посилання є в картці кожного апарата.
+
+### Ліцензія
+Код сайту поширюється за ліцензією [MIT](LICENSE). Фото й дані NASA, як правило, не захищені авторським правом у США (див. [NASA Media Usage Guidelines](https://www.nasa.gov/nasa-brand-center/images-and-media/)). Карта Марса — Solar System Scope, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+
 ### Команда
 Курсанти 3 курсу Інституту спеціального зв'язку та захисту інформації КПІ (ІСЗЗІ), спеціальність «Електронні комунікації та радіотехніка»:
 
@@ -82,6 +88,12 @@ Plain HTML, CSS and JavaScript, no frameworks or libraries. The 3D planet is ren
 
 ### Run locally
 Use a local server (VS Code **Live Server**, or `python -m http.server 8000`) and open `http://localhost:8000`.
+
+### AI tools
+We used AI assistants during development: **Claude** (Anthropic) for code, 3D models and translation; **Gemini** (Google) and **Grok** (xAI) for research, brainstorming and text checks. All facts were checked against primary sources, mostly NASA; links are in each spacecraft card.
+
+### License
+The website code is released under the [MIT License](LICENSE). NASA photos and data are generally not subject to copyright in the United States (see [NASA Media Usage Guidelines](https://www.nasa.gov/nasa-brand-center/images-and-media/)). Mars map: Solar System Scope, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 ### Team
 Third-year cadets of the Institute of Special Communications and Information Protection of KPI (ISCIP), Electronic Communications & Radio Engineering:
